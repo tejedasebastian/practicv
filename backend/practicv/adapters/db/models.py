@@ -11,6 +11,7 @@ from sqlalchemy import (
     ForeignKey,
     Index,
     Integer,
+    LargeBinary,
     String,
     Text,
     UniqueConstraint,
@@ -83,6 +84,7 @@ class CVDocumentModel(Base):
     mime_type: Mapped[str] = mapped_column(String(100), nullable=False)
     raw_text: Mapped[str | None] = mapped_column(Text)
     parsed_json: Mapped[dict | None] = mapped_column(JSONB)
+    file_bytes: Mapped[bytes | None] = mapped_column(LargeBinary)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     uploaded_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utcnow, nullable=False

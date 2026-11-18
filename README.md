@@ -4,7 +4,7 @@
 
 PractiCV convierte cualquier oferta de prácticas en una decisión: captura la oferta, la compara con tu CV, te explica qué te falta y organiza tu postulación en un Kanban con recordatorios.
 
-> **Estado:** Fase 1 completada (PostgreSQL 17, dominio, migraciones, seed y SQL analítico). El producto v0.1.0 sigue en desarrollo. Este README describe el producto terminado; las capturas y métricas se completan al cerrar el roadmap.
+> **Estado:** Fase 2 completada (perfil, CV PDF/DOCX, parser de secciones y habilidades, edición manual y análisis IA opt-in). El producto v0.1.0 sigue en desarrollo. Este README describe el producto terminado; las capturas y métricas se completan al cerrar el roadmap.
 >
 > **English:** [README.en.md](README.en.md)
 
@@ -47,6 +47,19 @@ No es un job board, no postula automáticamente y no promete empleo.
 ![Kanban de postulaciones](docs/assets/kanban.png)
 
 ![Vista bilingüe](docs/assets/bilingual.png)
+
+---
+
+## Perfil y CV
+
+- CRUD de perfil con datos académicos y roles objetivo.
+- Subida de CV en **PDF o DOCX**, con extracción de texto y tablas.
+- Detección de secciones: perfil, educación, experiencia, proyectos, habilidades, certificaciones e idiomas.
+- Extracción de habilidades con `skills.yaml` y alias (`PowerBI` → `Power BI`, `PostgreSQL` → `PostgreSQL`).
+- Pantalla de confirmación para corregir nivel (0–3) y marcar habilidades como confirmadas.
+- El archivo original se guarda localmente en `cv_documents.file_bytes`.
+- Análisis con IA **solo si faltan secciones o habilidades** y con consentimiento explícito.
+- Antes de enviar texto a la IA se redactan correo y teléfono (`[EMAIL]`, `[PHONE]`).
 
 ---
 

@@ -46,6 +46,7 @@ class CVDocument:
     mime_type: str
     raw_text: str | None = None
     parsed_json: dict | None = None
+    file_bytes: bytes | None = None
     is_active: bool = True
     id: UUID = field(default_factory=uuid4)
     uploaded_at: datetime = field(default_factory=utcnow)

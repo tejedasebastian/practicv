@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from uuid import UUID
 
-from sqlalchemy import func, select, text
+from sqlalchemy import delete, func, select, text
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -13,6 +13,7 @@ from practicv.adapters.db.models import (
     MatchModel,
     OfferModel,
     ProfileModel,
+    ProfileSkillModel,
     ReminderModel,
     SkillModel,
 )
@@ -26,7 +27,7 @@ from practicv.domain.entities import (
     Skill,
     utcnow,
 )
-from practicv.domain.enums import ApplicationStatus, ReminderStatus
+from practicv.domain.enums import ApplicationStatus, ReminderStatus, SkillSource
 from practicv.domain.errors import ConflictError, NotFoundError
 
 
@@ -58,6 +59,7 @@ def _cv(row: CVDocumentModel) -> CVDocument:
         mime_type=row.mime_type,
         raw_text=row.raw_text,
         parsed_json=row.parsed_json,
+        file_bytes=row.file_bytes,
         is_active=row.is_active,
         uploaded_at=row.uploaded_at,
     )
@@ -179,6 +181,24 @@ class ProfileRepository:
         rows = self.session.scalars(select(ProfileModel).order_by(ProfileModel.full_name)).all()
         return [_profile(row) for row in rows]
 
+    def update(self, profile_id: UUID, **fields: object) -> Profile:
+        row = self.session.get(ProfileModel, profile_id)
+        if row is None:
+            raise NotFoundError("Profile not found", {"profile_id": str(profile_id)})
+        for key, value in fields.items():
+            if value is not None and hasattr(row, key):
+                setattr(row, key, value)
+        row.updated_at = utcnow()
+        self.session.flush()
+        return _profile(row)
+
+    def delete(self, profile_id: UUID) -> None:
+        row = self.session.get(ProfileModel, profile_id)
+        if row is None:
+            raise NotFoundError("Profile not found", {"profile_id": str(profile_id)})
+        self.session.delete(row)
+        self.session.flush()
+
 
 class CVDocumentRepository:
     def __init__(self, session: Session) -> None:
@@ -191,11 +211,23 @@ class CVDocumentRepository:
             mime_type=document.mime_type,
             raw_text=document.raw_text,
             parsed_json=document.parsed_json,
+            file_bytes=document.file_bytes,
             is_active=document.is_active,
         )
         self.session.add(row)
         self.session.flush()
         return _cv(row)
+
+    def deactivate_all(self, profile_id: UUID) -> None:
+        rows = self.session.scalars(
+            select(CVDocumentModel).where(
+                CVDocumentModel.profile_id == profile_id,
+                CVDocumentModel.is_active.is_(True),
+            )
+        ).all()
+        for row in rows:
+            row.is_active = False
+        self.session.flush()
 
     def get_active(self, profile_id: UUID) -> CVDocument | None:
         row = self.session.scalar(
@@ -230,9 +262,65 @@ class SkillRepository:
             ) from exc
         return _skill(row)
 
+    def get(self, skill_id: UUID) -> Skill | None:
+        row = self.session.get(SkillModel, skill_id)
+        return _skill(row) if row else None
+
+    def get_by_canonical_name(self, canonical_name: str) -> Skill | None:
+        row = self.session.scalar(
+            select(SkillModel).where(SkillModel.canonical_name == canonical_name)
+        )
+        return _skill(row) if row else None
+
     def list(self) -> list[Skill]:
         rows = self.session.scalars(select(SkillModel).order_by(SkillModel.canonical_name)).all()
         return [_skill(row) for row in rows]
+
+
+class ProfileSkillRepository:
+    def __init__(self, session: Session) -> None:
+        self.session = session
+
+    def replace_for_profile(
+        self,
+        profile_id: UUID,
+        items: list[tuple[UUID, int, str | None, bool]],
+    ) -> list[dict]:
+        self.session.execute(
+            delete(ProfileSkillModel).where(ProfileSkillModel.profile_id == profile_id)
+        )
+        for skill_id, level, evidence, confirmed in items:
+            self.session.add(
+                ProfileSkillModel(
+                    profile_id=profile_id,
+                    skill_id=skill_id,
+                    level=level,
+                    evidence=evidence,
+                    source=SkillSource.CV,
+                    confirmed=confirmed,
+                )
+            )
+        self.session.flush()
+        return self.list_for_profile(profile_id)
+
+    def list_for_profile(self, profile_id: UUID) -> list[dict]:
+        rows = self.session.execute(
+            select(ProfileSkillModel, SkillModel)
+            .join(SkillModel, SkillModel.id == ProfileSkillModel.skill_id)
+            .where(ProfileSkillModel.profile_id == profile_id)
+            .order_by(SkillModel.canonical_name)
+        ).all()
+        return [
+            {
+                "skill_id": profile_skill.skill_id,
+                "canonical_name": skill.canonical_name,
+                "category": skill.category,
+                "level": profile_skill.level,
+                "evidence": profile_skill.evidence,
+                "confirmed": profile_skill.confirmed,
+            }
+            for profile_skill, skill in rows
+        ]
 
 
 class OfferRepository:

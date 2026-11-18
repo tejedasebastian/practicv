@@ -87,8 +87,8 @@ def api() -> Generator[ApiContext]:
             "warning",
         ],
         env=env,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
         text=True,
     )
     base_url = f"http://127.0.0.1:{port}"
@@ -105,8 +105,7 @@ def api() -> Generator[ApiContext]:
             time.sleep(0.2)
         else:
             process.terminate()
-            output, _ = process.communicate(timeout=5)
-            raise AssertionError(f"API did not start: {last_error}\n{output}")
+            raise AssertionError(f"API did not start: {last_error}")
 
         yield ApiContext(
             base_url=base_url,

@@ -1,0 +1,220 @@
+- id: python
+  name: Python
+  category: programming
+  aliases: [python, python3, py]
+- id: javascript
+  name: JavaScript
+  category: programming
+  aliases: [javascript, js, ecmascript]
+- id: typescript
+  name: TypeScript
+  category: programming
+  aliases: [typescript, ts]
+- id: java
+  name: Java
+  category: programming
+  aliases: [java]
+- id: csharp
+  name: C#
+  category: programming
+  aliases: [c#, c sharp, csharp]
+- id: cpp
+  name: C++
+  category: programming
+  aliases: [c++, cpp]
+- id: go
+  name: Go
+  category: programming
+  aliases: [golang]
+- id: php
+  name: PHP
+  category: programming
+  aliases: [php]
+- id: ruby
+  name: Ruby
+  category: programming
+  aliases: [ruby]
+- id: r
+  name: R
+  category: programming
+  aliases: [lenguaje r, rstudio]
+- id: react
+  name: React
+  category: frontend
+  aliases: [react, react.js, reactjs]
+- id: nextjs
+  name: Next.js
+  category: frontend
+  aliases: [next.js, nextjs, next js]
+- id: fastapi
+  name: FastAPI
+  category: backend
+  aliases: [fastapi, fast api]
+- id: django
+  name: Django
+  category: backend
+  aliases: [django]
+- id: drf
+  name: Django REST Framework
+  category: backend
+  aliases: [django rest framework, drf]
+- id: flask
+  name: Flask
+  category: backend
+  aliases: [flask]
+- id: nodejs
+  name: Node.js
+  category: backend
+  aliases: [node.js, nodejs, node js]
+- id: tailwind
+  name: TailwindCSS
+  category: frontend
+  aliases: [tailwind, tailwindcss, tailwind css]
+- id: html
+  name: HTML
+  category: frontend
+  aliases: [html, html5]
+- id: css
+  name: CSS
+  category: frontend
+  aliases: [css, css3]
+- id: sql
+  name: SQL
+  category: data
+  aliases: [sql]
+- id: postgresql
+  name: PostgreSQL
+  category: data
+  aliases: [postgresql, postgres, psql]
+- id: mysql
+  name: MySQL
+  category: data
+  aliases: [mysql]
+- id: sqlserver
+  name: SQL Server
+  category: data
+  aliases: [sql server, mssql, t-sql]
+- id: oracle
+  name: Oracle Database
+  category: data
+  aliases: [oracle database, oracle]
+- id: plsql
+  name: PL/SQL
+  category: data
+  aliases: [pl/sql, plsql]
+- id: pandas
+  name: Pandas
+  category: data
+  aliases: [pandas]
+- id: numpy
+  name: NumPy
+  category: data
+  aliases: [numpy]
+- id: scikit_learn
+  name: scikit-learn
+  category: data
+  aliases: [scikit-learn, scikit learn, sklearn]
+- id: spark
+  name: Apache Spark
+  category: data
+  aliases: [apache spark, spark]
+- id: databricks
+  name: Databricks
+  category: data
+  aliases: [databricks]
+- id: etl
+  name: ETL
+  category: data
+  aliases: [etl, extract transform load]
+- id: data_quality
+  name: Data Quality
+  category: data
+  aliases: [data quality, calidad de datos]
+- id: power_bi
+  name: Power BI
+  category: bi
+  aliases: [power bi, powerbi, pbi]
+- id: tableau
+  name: Tableau
+  category: bi
+  aliases: [tableau]
+- id: excel
+  name: Excel
+  category: office
+  aliases: [excel, microsoft excel, hojas de calculo, spreadsheets]
+- id: power_query
+  name: Power Query
+  category: bi
+  aliases: [power query, powerquery]
+- id: dax
+  name: DAX
+  category: bi
+  aliases: [dax]
+- id: power_automate
+  name: Power Automate
+  category: automation
+  aliases: [power automate, powerautomate]
+- id: jira
+  name: Jira
+  category: automation
+  aliases: [jira]
+- id: git
+  name: Git
+  category: devops
+  aliases: [git]
+- id: github
+  name: GitHub
+  category: devops
+  aliases: [github]
+- id: docker
+  name: Docker
+  category: devops
+  aliases: [docker, containers]
+- id: linux
+  name: Linux
+  category: devops
+  aliases: [linux, ubuntu]
+- id: aws
+  name: AWS
+  category: cloud
+  aliases: [aws, amazon web services]
+- id: azure
+  name: Azure
+  category: cloud
+  aliases: [azure, microsoft azure]
+- id: gcp
+  name: GCP
+  category: cloud
+  aliases: [gcp, google cloud]
+- id: postman
+  name: Postman
+  category: testing
+  aliases: [postman]
+- id: sonarqube
+  name: SonarQube
+  category: testing
+  aliases: [sonarqube, sonar qube]
+- id: machine_learning
+  name: Machine Learning
+  category: data
+  aliases: [machine learning, aprendizaje automatico]
+- id: english
+  name: Inglés
+  category: language
+  aliases: [ingles, english]
+- id: spanish
+  name: Español
+  category: language
+  aliases: [espanol, spanish]
+- id: communication
+  name: Comunicación
+  category: soft
+  aliases: [comunicacion, communication]
+- id: teamwork
+  name: Trabajo en equipo
+  category: soft
+  aliases: [trabajo en equipo, teamwork]
+- id: leadership
+  name: Liderazgo
+  category: soft
+  aliases: [liderazgo, leadership]

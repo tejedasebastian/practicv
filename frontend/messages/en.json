@@ -2,7 +2,8 @@
   "nav": {
     "language": "Language",
     "es": "ES",
-    "en": "EN"
+    "en": "EN",
+    "profile": "My profile"
   },
   "hero": {
     "eyebrow": "Phase 0 · Foundation",
@@ -26,5 +27,34 @@
       "description": "Kanban, reminders, and export."
     }
   ],
-  "footer": "Built with FastAPI, Next.js, and PostgreSQL."
+  "footer": "Built with FastAPI, Next.js, and PostgreSQL.",
+  "profile": {
+    "title": "Your profile",
+    "subtitle": "Create your profile and upload your CV to extract sections, skills, and gaps.",
+    "fullName": "Full name",
+    "email": "Email",
+    "career": "Degree",
+    "cycle": "Cycle",
+    "location": "Location",
+    "targetRoles": "Target roles (comma-separated)",
+    "save": "Save profile",
+    "saving": "Saving...",
+    "upload": "Upload CV (PDF/DOCX)",
+    "uploading": "Processing CV...",
+    "sections": "Detected sections",
+    "skills": "Detected skills",
+    "level": "Level",
+    "confirmed": "Confirmed",
+    "saveSkills": "Save skills",
+    "analyze": "Analyze with AI",
+    "consent": "I consent to sending the redacted text to the AI adapter (local stub).",
+    "aiResult": "AI suggestions",
+    "redacted": "Redacted text",
+    "error": "Something went wrong",
+    "profileSaved": "Profile saved",
+    "skillsSaved": "Skills saved",
+    "cvUploaded": "CV processed",
+    "noProfile": "Save your profile first to upload a CV.",
+    "home": "Back to home"
+  }
 }

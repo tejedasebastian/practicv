@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { dictionaries, type Locale } from "@/lib/i18n";
@@ -22,30 +23,38 @@ export default function Home() {
           <span className="text-xl font-semibold tracking-tight">PractiCV</span>
         </div>
 
-        <div className="flex items-center gap-2 rounded-full border border-slate-300 bg-white p-1 text-sm shadow-sm">
-          <span className="px-2 text-slate-500">{t.nav.language}</span>
-          <button
-            type="button"
-            data-testid="lang-es"
-            aria-pressed={locale === "es"}
-            onClick={() => setLocale("es")}
-            className={`rounded-full px-3 py-1 font-medium transition ${
-              locale === "es" ? "bg-emerald-600 text-white" : "text-slate-600 hover:bg-slate-100"
-            }`}
+        <div className="flex items-center gap-4">
+          <Link
+            href="/perfil"
+            className="text-sm font-medium text-slate-600 transition hover:text-emerald-700"
           >
-            {t.nav.es}
-          </button>
-          <button
-            type="button"
-            data-testid="lang-en"
-            aria-pressed={locale === "en"}
-            onClick={() => setLocale("en")}
-            className={`rounded-full px-3 py-1 font-medium transition ${
-              locale === "en" ? "bg-emerald-600 text-white" : "text-slate-600 hover:bg-slate-100"
-            }`}
-          >
-            {t.nav.en}
-          </button>
+            {t.nav.profile}
+          </Link>
+          <div className="flex items-center gap-2 rounded-full border border-slate-300 bg-white p-1 text-sm shadow-sm">
+            <span className="px-2 text-slate-500">{t.nav.language}</span>
+            <button
+              type="button"
+              data-testid="lang-es"
+              aria-pressed={locale === "es"}
+              onClick={() => setLocale("es")}
+              className={`rounded-full px-3 py-1 font-medium transition ${
+                locale === "es" ? "bg-emerald-600 text-white" : "text-slate-600 hover:bg-slate-100"
+              }`}
+            >
+              {t.nav.es}
+            </button>
+            <button
+              type="button"
+              data-testid="lang-en"
+              aria-pressed={locale === "en"}
+              onClick={() => setLocale("en")}
+              className={`rounded-full px-3 py-1 font-medium transition ${
+                locale === "en" ? "bg-emerald-600 text-white" : "text-slate-600 hover:bg-slate-100"
+              }`}
+            >
+              {t.nav.en}
+            </button>
+          </div>
         </div>
       </header>
 

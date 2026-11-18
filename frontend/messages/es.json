@@ -2,7 +2,8 @@
   "nav": {
     "language": "Idioma",
     "es": "ES",
-    "en": "EN"
+    "en": "EN",
+    "profile": "Mi perfil"
   },
   "hero": {
     "eyebrow": "Fase 0 · Fundación",
@@ -26,5 +27,34 @@
       "description": "Kanban, recordatorios y exportación."
     }
   ],
-  "footer": "Construido con FastAPI, Next.js y PostgreSQL."
+  "footer": "Construido con FastAPI, Next.js y PostgreSQL.",
+  "profile": {
+    "title": "Tu perfil",
+    "subtitle": "Crea tu perfil y sube tu CV para extraer secciones, habilidades y brechas.",
+    "fullName": "Nombre completo",
+    "email": "Correo",
+    "career": "Carrera",
+    "cycle": "Ciclo",
+    "location": "Ubicación",
+    "targetRoles": "Roles objetivo (separados por coma)",
+    "save": "Guardar perfil",
+    "saving": "Guardando...",
+    "upload": "Subir CV (PDF/DOCX)",
+    "uploading": "Procesando CV...",
+    "sections": "Secciones detectadas",
+    "skills": "Habilidades detectadas",
+    "level": "Nivel",
+    "confirmed": "Confirmada",
+    "saveSkills": "Guardar habilidades",
+    "analyze": "Analizar con IA",
+    "consent": "Autorizo enviar el texto redactado a la IA (stub local).",
+    "aiResult": "Sugerencias de IA",
+    "redacted": "Texto redactado",
+    "error": "Ocurrió un error",
+    "profileSaved": "Perfil guardado",
+    "skillsSaved": "Habilidades guardadas",
+    "cvUploaded": "CV procesado",
+    "noProfile": "Primero guarda tu perfil para subir el CV.",
+    "home": "Volver al inicio"
+  }
 }

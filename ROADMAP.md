@@ -98,35 +98,44 @@ feat: add domain model and postgres persistence
 
 ## Fase 2 — Perfil y CV
 
-- [ ] CRUD de perfil.
-- [ ] Endpoint de subida de CV (PDF/DOCX).
-- [ ] Extracción de texto con `pdfplumber`/`pypdf` y `python-docx`.
-- [ ] Detección de secciones: educación, experiencia, proyectos, habilidades, certificaciones, idiomas.
-- [ ] Extracción de habilidades con `skills.yaml`.
-- [ ] Pantalla de confirmación y edición de habilidades/niveles.
-- [ ] Parseo mixto: botón “analizar con IA” solo si falta información.
-- [ ] Redacción de correo/teléfono antes de enviar a LLM.
-- [ ] Persistir `parsed_json` y texto extraído.
+- [x] CRUD de perfil.
+- [x] Endpoint de subida de CV (PDF/DOCX).
+- [x] Extracción de texto con `pdfplumber`/`pypdf` y `python-docx`.
+- [x] Detección de secciones: educación, experiencia, proyectos, habilidades, certificaciones, idiomas.
+- [x] Extracción de habilidades con `skills.yaml`.
+- [x] Pantalla de confirmación y edición de habilidades/niveles.
+- [x] Parseo mixto: botón “analizar con IA” solo si falta información.
+- [x] Redacción de correo/teléfono antes de enviar a LLM.
+- [x] Persistir `parsed_json` y texto extraído.
 
 **E2E del checkpoint:**
 
-- Subir un CV medio-difícil:
-  - una sección sin título,
-  - habilidades en una tabla,
-  - un alias (“PowerBI”),
-  - correo y teléfono.
-- Verificar:
-  - texto extraído,
-  - habilidades detectadas,
-  - edición manual,
-  - que el correo/teléfono no se envíen a la IA.
+- [x] Subir un CV medio-difícil:
+  - [x] una sección sin título,
+  - [x] habilidades en una tabla,
+  - [x] un alias (“PowerBI”),
+  - [x] correo y teléfono.
+- [x] Verificar:
+  - [x] texto extraído,
+  - [x] habilidades detectadas,
+  - [x] edición manual,
+  - [x] que el correo/teléfono no se envíen a la IA.
+
+**Evidencia local:**
+
+- `pytest tests/e2e -v` → 8 passed (7 de Fase 1 + 1 de Fase 2).
+- `ruff format` y `ruff check` → All checks passed.
+- `npm run lint`, `npm run typecheck`, `npm run build` → OK.
+- `npx playwright test` → 2 passed (landing + perfil/CV).
+- PDF y DOCX generados en el test; `PowerBI` se mapea a `Power BI`.
+- `analyze-ai` sin consentimiento → 422; con consentimiento → texto con `[EMAIL]` y `[PHONE]`.
 
 **Criterio de aceptación:**
 
-- El usuario puede corregir todo.
-- Sin IA, el flujo funciona.
-- El CV original se guarda localmente.
-- No se envía PII a terceros sin consentimiento.
+- [x] El usuario puede corregir todo.
+- [x] Sin IA, el flujo funciona.
+- [x] El CV original se guarda localmente (`file_bytes`).
+- [x] No se envía PII a terceros sin consentimiento.
 
 **Commit sugerido:**
 
