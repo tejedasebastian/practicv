@@ -7,9 +7,13 @@ WORKDIR /app
 
 COPY pyproject.toml ./
 COPY practicv ./practicv
+COPY alembic.ini ./
+COPY migrations ./migrations
+COPY docker-entrypoint.sh ./
 
-RUN pip install --no-cache-dir .
+RUN pip install --no-cache-dir . \
+    && chmod +x docker-entrypoint.sh
 
 EXPOSE 8000
 
-CMD ["uvicorn", "practicv.main:app", "--host", "0.0.0.0", "--port", "8000"]
+ENTRYPOINT ["./docker-entrypoint.sh"]

@@ -43,7 +43,7 @@ No hardcodear strings de UI. Todo texto visible pasa por el sistema de i18n.
 - SQLAlchemy 2.
 - Pydantic v2.
 - Alembic.
-- SQLite para v0.1; PostgreSQL opcional para v0.2.
+- PostgreSQL 17 (Docker local); SQLAlchemy 2 + Alembic + psycopg 3.
 - `ruff` para formato y lint.
 - `pytest` + Playwright para E2E.
 
@@ -108,6 +108,18 @@ Formato de error de API:
 - `message` técnico en inglés.
 - La traducción al usuario se hace en la UI.
 - No devolver stack traces en producción.
+
+### SQL y migraciones
+
+- Motor principal: PostgreSQL 17. Driver: `psycopg` 3.
+- Todo cambio de esquema pasa por Alembic; no se usa `create_all` en producción.
+- SQLAlchemy 2 para CRUD; SQLAlchemy Core o SQL parametrizado para analítica.
+- Las consultas analíticas deben usar SQL real: CTEs, window functions, `GROUPING SETS` cuando aporte.
+- No concatenar SQL con strings de usuario; usar parámetros.
+- Documentar `EXPLAIN ANALYZE` para consultas lentas y justificar índices.
+- Usar `JSONB` solo para datos flexibles; no para reemplazar columnas relacionales.
+- Las vistas y funciones viven en migraciones versionadas.
+- Los tests E2E corren contra PostgreSQL, no contra SQLite.
 
 ### Logging
 

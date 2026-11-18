@@ -47,35 +47,51 @@ chore: initialize practicv project
 
 ---
 
-## Fase 1 — Dominio y persistencia
+## Fase 1 — Dominio y persistencia (PostgreSQL)
 
-- [ ] Definir entidades y contratos:
+- [x] Configurar PostgreSQL 17 en Docker y base `practicv_test`.
+- [x] Configurar SQLAlchemy 2 + `psycopg` 3.
+- [x] Definir entidades y contratos:
   - `Profile`, `CVDocument`, `Skill`, `Offer`, `OfferSkill`, `Match`, `Application`, `Reminder`.
-- [ ] Configurar SQLAlchemy 2 + SQLite.
-- [ ] Configurar Alembic y primera migración.
-- [ ] Implementar repositorios por contexto.
-- [ ] Implementar `request_id` y logging estructurado.
-- [ ] Implementar manejo de errores de dominio → HTTP.
-- [ ] Crear seed de demo con datos sintéticos.
+- [x] Configurar Alembic y primera migración.
+- [x] Implementar repositorios por contexto.
+- [x] Implementar vista `v_offer_ranking` con CTE + `ROW_NUMBER()`.
+- [x] Implementar función PL/pgSQL `fn_top_offers_for_profile(profile_id)`.
+- [x] Agregar índices y documentar `EXPLAIN ANALYZE`.
+- [x] Implementar `request_id` y logging estructurado.
+- [x] Implementar manejo de errores de dominio → HTTP.
+- [x] Crear seed de demo con datos sintéticos (incluye 1,000 ofertas para volumen).
 
 **E2E del checkpoint:**
 
-- La app arranca con una base vacía.
-- Las migraciones corren desde cero.
-- El seed de demo inserta un perfil, dos ofertas y un match.
-- Un error de dominio devuelve el formato `{error: {code, message, details}}`.
+- [x] La app arranca con una base vacía.
+- [x] Las migraciones corren desde cero.
+- [x] El seed de demo inserta un perfil, skills, ofertas, match, postulación y recordatorio.
+- [x] Un error de dominio devuelve el formato `{error: {code, message, details}}`.
+- [x] La vista `v_offer_ranking` devuelve el ranking por perfil con `ROW_NUMBER()`.
+- [x] La función `fn_top_offers_for_profile` devuelve las mejores ofertas.
+- [x] El health check reporta `database: ok`.
+
+**Evidencia local:**
+
+- `alembic upgrade head` → 2 migraciones aplicadas.
+- `python -m practicv seed --demo --volume 1000` → 1,005 ofertas, 505 matches, 3 postulaciones.
+- `pytest tests/e2e -v` → 7 passed.
+- `ruff format` y `ruff check` → All checks passed.
+- `EXPLAIN ANALYZE` → `Index Only Scan using ix_matches_profile_score_covering`, 0.517 ms.
 
 **Criterio de aceptación:**
 
-- Migraciones idempotentes.
-- Repositorios testeables por E2E.
-- No hay lógica de negocio en rutas.
-- No hay PII en el seed.
+- [x] Migraciones idempotentes.
+- [x] Repositorios testeables por E2E.
+- [x] No hay lógica de negocio en rutas.
+- [x] No hay PII en el seed.
+- [x] Las consultas analíticas usan SQL real (CTE/window), no solo ORM.
 
 **Commit sugerido:**
 
 ```text
-feat: add domain model and persistence
+feat: add domain model and postgres persistence
 ```
 
 ---

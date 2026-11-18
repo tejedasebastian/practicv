@@ -103,7 +103,7 @@ export default function Home() {
         <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-sm text-emerald-900">
           <p className="font-semibold">PractiCV v0.1.0 · Fase 0</p>
           <p className="mt-2">
-            Scaffold listo: FastAPI, Next.js, SQLite, Docker, CI y E2E. El producto se construye en
+            Scaffold listo: FastAPI, Next.js, PostgreSQL, Docker, CI y E2E. El producto se construye en
             los siguientes checkpoints del roadmap.
           </p>
         </div>

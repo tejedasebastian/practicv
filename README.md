@@ -4,7 +4,7 @@
 
 PractiCV convierte cualquier oferta de prácticas en una decisión: captura la oferta, la compara con tu CV, te explica qué te falta y organiza tu postulación en un Kanban con recordatorios.
 
-> **Estado:** Fase 0 completada (scaffold, health check, UI base, Docker y CI). El producto v0.1.0 sigue en desarrollo. Este README describe el producto terminado; las capturas y métricas se completan al cerrar el roadmap.
+> **Estado:** Fase 1 completada (PostgreSQL 17, dominio, migraciones, seed y SQL analítico). El producto v0.1.0 sigue en desarrollo. Este README describe el producto terminado; las capturas y métricas se completan al cerrar el roadmap.
 >
 > **English:** [README.en.md](README.en.md)
 
@@ -92,7 +92,7 @@ Sources: MCP, texto, CSV, URL   Exports: Excel, CSV, ICS
 | Capa | Tecnología |
 |---|---|
 | Backend | Python 3.13, FastAPI, SQLAlchemy 2, Pydantic v2, Alembic |
-| Base de datos | SQLite (PostgreSQL opcional) |
+| Base de datos | PostgreSQL 17 (Docker local) |
 | Frontend | Next.js, TypeScript, Tailwind CSS, dnd-kit |
 | Parseo | pdfplumber/pypdf, python-docx, BeautifulSoup, extruct |
 | Matching | Reglas deterministas en Python |
@@ -104,11 +104,12 @@ Sources: MCP, texto, CSV, URL   Exports: Excel, CSV, ICS
 
 ## Inicio rápido
 
-> Comandos objetivo; se ajustan cuando exista el scaffold.
-
 ```powershell
 git clone <repository-url>
 cd practicv
+
+# PostgreSQL local
+docker compose up -d db
 
 # Backend
 cd backend
@@ -116,15 +117,16 @@ python -m venv .venv
 .venv\Scripts\Activate.ps1
 pip install -e ".[dev]"
 alembic upgrade head
+python -m practicv seed --demo --volume 1000
 uvicorn practicv.main:app --reload
 
 # Frontend
 cd ..\frontend
-pnpm install
-pnpm dev
+npm install
+npm run dev
 ```
 
-Abrir `http://localhost:3000`.
+Abrir `http://localhost:3000`. PostgreSQL escucha en `localhost:5434`.
 
 ### Docker Compose
 
@@ -222,6 +224,23 @@ Decisión:
 - Si no: **Preparar CV**.
 
 El usuario puede corregir habilidades, niveles y decisión. El score es una **coincidencia estimada**, no una probabilidad de contratación.
+
+---
+
+## Modelo de datos y SQL
+
+PractiCV usa **PostgreSQL 17** con SQLAlchemy 2, Alembic y `psycopg` 3.
+
+- Modelo relacional normalizado: perfiles, CVs, skills, ofertas, matches, postulaciones, eventos y recordatorios.
+- `offers.dedupe_hash` UNIQUE para ingesta idempotente.
+- `applications(profile_id, offer_id)` UNIQUE para no duplicar postulaciones.
+- `JSONB` para perfiles, explicaciones y configuración flexible.
+- Vista `v_offer_ranking` con CTE + `ROW_NUMBER()`.
+- Función PL/pgSQL `fn_top_offers_for_profile(uuid)`.
+- Índice covering `ix_matches_profile_score_covering`.
+- `EXPLAIN ANALYZE` documentado en [`docs/sql-performance.md`](docs/sql-performance.md).
+
+**Por qué PostgreSQL y no SQLite:** PostgreSQL permite demostrar SQL avanzado de verdad (CTEs, window functions, JSONB, vistas, PL/pgSQL, índices y planes de ejecución). SQLite es útil para prototipos, pero se queda corto para ese nivel y para los roles de datos/BI.
 
 ---
 

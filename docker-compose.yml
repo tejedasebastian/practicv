@@ -1,4 +1,21 @@
 services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: practicv
+      POSTGRES_PASSWORD: practicv
+      POSTGRES_DB: practicv
+    ports:
+      - "5434:5432"
+    volumes:
+      - practicv_pgdata:/var/lib/postgresql/data
+      - ./backend/docker/initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U practicv -d practicv"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
   backend:
     build:
       context: ./backend
@@ -6,8 +23,11 @@ services:
       - "8001:8000"
     environment:
       PRACTICV_ENVIRONMENT: docker
-      PRACTICV_DATABASE_URL: sqlite:///./practicv.db
+      PRACTICV_DATABASE_URL: postgresql+psycopg://practicv:practicv@db:5432/practicv
       PRACTICV_FRONTEND_ORIGIN: http://localhost:3001
+    depends_on:
+      db:
+        condition: service_healthy
     healthcheck:
       test:
         [
@@ -30,3 +50,6 @@ services:
     depends_on:
       backend:
         condition: service_healthy
+
+volumes:
+  practicv_pgdata:

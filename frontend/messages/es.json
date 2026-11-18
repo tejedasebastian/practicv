@@ -26,5 +26,5 @@
       "description": "Kanban, recordatorios y exportación."
     }
   ],
-  "footer": "Construido con FastAPI, Next.js y SQLite."
+  "footer": "Construido con FastAPI, Next.js y PostgreSQL."
 }

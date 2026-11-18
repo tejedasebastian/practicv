@@ -78,7 +78,7 @@ Las bolsas de trabajo resuelven la publicación, no la decisión personal. Pract
 
 ### Incluido
 
-- Un solo usuario, local-first, SQLite.
+- Un solo usuario, local-first, PostgreSQL 17 local (Docker).
 - Perfil del estudiante.
 - Un CV activo (PDF/DOCX) con parseo mixto:
   - reglas locales primero,
@@ -363,7 +363,7 @@ Un solo deployable local, con boundaries y contratos de microservicios.
 
 ## 9. Modelo de datos
 
-Base: SQLite. `SQLAlchemy 2` + `Alembic`. Fechas UTC.
+Base: **PostgreSQL 17**. `SQLAlchemy 2` + `Alembic` + `psycopg 3`. Fechas UTC.
 
 ### `profiles`
 
@@ -510,6 +510,35 @@ Restricción: `UNIQUE(profile_id, offer_id)`.
 - `reminders.due_at` index.
 - `profile_skills` PK compuesta `(profile_id, skill_id)`.
 - `offer_skills` PK compuesta `(offer_id, skill_id)`.
+
+### 9.1 Motor de base de datos y SQL avanzado
+
+**Decisión: PostgreSQL 17 como motor principal.**
+
+SQLAlchemy 2 es el toolkit/ORM, no el motor. SQLite se descarta como motor principal porque no permite demostrar con rigor el nivel **SQL Avanzado** que el CV declara:
+
+- CTEs y window functions de forma nativa.
+- `JSONB` para perfiles, explicaciones y configuraciones.
+- Vistas y funciones PL/pgSQL.
+- Índices parciales, compuestos y `EXPLAIN ANALYZE`.
+- Mayor cercanía a los motores usados en analytics y banca.
+
+PostgreSQL se ejecuta localmente con Docker Compose, así que el producto sigue siendo local-first. La app no requiere un servicio cloud.
+
+**Entregables SQL de la Fase 1:**
+
+- Vista `v_offer_ranking`: CTE + `ROW_NUMBER()` para rankear ofertas por perfil.
+- Función `fn_top_offers_for_profile(profile_id)`: PL/pgSQL con parámetros y `RETURNS TABLE`.
+- Índices:
+  - `offers(dedupe_hash)` UNIQUE.
+  - `offers(deadline_at)`.
+  - `offers(company)`.
+  - `applications(profile_id, status)`.
+  - `matches(profile_id, overall_score DESC)`.
+- `docs/sql-performance.md` con `EXPLAIN ANALYZE` antes/después de un índice.
+- Seed de 1,000 ofertas sintéticas para probar volumen.
+
+**CI:** GitHub Actions levanta un servicio PostgreSQL 17 y ejecuta las migraciones y el E2E contra una base limpia.
 
 ---
 
@@ -896,7 +925,7 @@ Ver `ROADMAP.md`. Resumen:
 - Nombre: PractiCV.
 - Repo: `practicv`.
 - Carpeta: `projects/practicv`.
-- Stack: FastAPI + Next.js + SQLite.
+- Stack: FastAPI + Next.js + PostgreSQL 17.
 - Arquitectura: monolito modular.
 - Alcance: MVP completo.
 - Piloto: omitido; dogfooding.

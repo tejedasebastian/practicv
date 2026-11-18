@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     app_name: str = "PractiCV"
     environment: str = "local"
     version: str = "0.1.0"
-    database_url: str = "sqlite:///./practicv.db"
+    database_url: str = "postgresql+psycopg://practicv:practicv@localhost:5434/practicv"
     frontend_origin: str = "http://localhost:3000"
 
     model_config = SettingsConfigDict(

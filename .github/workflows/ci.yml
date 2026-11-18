@@ -8,6 +8,23 @@ on:
 jobs:
   backend:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: practicv
+          POSTGRES_PASSWORD: practicv
+          POSTGRES_DB: practicv_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U practicv -d practicv_test"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      PRACTICV_DATABASE_URL: postgresql+psycopg://practicv:practicv@localhost:5432/practicv_test
+      PRACTICV_TEST_DATABASE_URL: postgresql+psycopg://practicv:practicv@localhost:5432/practicv_test
     defaults:
       run:
         working-directory: backend
