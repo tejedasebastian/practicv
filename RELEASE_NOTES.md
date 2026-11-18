@@ -96,7 +96,7 @@ must_have_score  = 100 * Σ(weight * coverage must) / Σ(weight must)
 | Playwright E2E | **5 passed** |
 | Demo Playwright | **1 passed** |
 | CI | **success** |
-| Checksums de artefactos | **4/4 OK** |
+| Checksums de artefactos | **5/5 OK** |
 
 Rendimiento SQL medido:
 
@@ -113,8 +113,9 @@ Execution Time: 0.517 ms
 - `applications.csv` — embudo de postulaciones.
 - `calendar.ics` — calendario con fechas y recordatorios.
 - `matches.json` — match completo con score, brechas y explicación.
+- `quality_report.json` — checks del flujo, métricas por paso y hashes de los artefactos.
 - `run_manifest.json` — manifiesto del run E2E.
-- `checksums.sha256` — hashes SHA-256 de los artefactos.
+- `checksums.sha256` — hashes SHA-256 de los cinco artefactos de payload.
 
 ---
 

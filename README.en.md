@@ -327,6 +327,8 @@ artifacts/e2e/
 └─ checksums.sha256
 ```
 
+`quality_report.json` records the flow checks (offer creation, gap-free match, application, reminder, Excel sheets, CSV header, and ICS), per-step timing metrics, and hashes of the payload artifacts.
+
 ---
 
 ## Metrics
@@ -339,7 +341,8 @@ artifacts/e2e/
 | Matches in synthetic seed | 505 |
 | Backend E2E tests | 18 passed |
 | UI E2E tests (Playwright) | 5 passed |
-| Backend E2E runtime | ~13.3 s |
+| Backend E2E runtime | ~10 s |
+| Artifact checksums | 5/5 OK |
 | Critical flows covered | Profile/CV, offers, match, applications, exports |
 | Real-offer dogfooding | Pending (manual, optional) |
 

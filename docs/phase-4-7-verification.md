@@ -33,7 +33,7 @@ tests\e2e\test_matching.py ...           [ 61%]
 tests\e2e\test_offers.py .....           [ 88%]
 tests\e2e\test_profile_persistence.py .. [100%]
 
-18 passed in 13.29s
+18 passed in 10.05s
 ```
 
 ---
@@ -194,19 +194,30 @@ artifacts/e2e/
 ├─ applications.xlsx
 ├─ applications.csv
 ├─ calendar.ics
+├─ quality_report.json
 └─ checksums.sha256
 ```
+
+`quality_report.json` contiene:
+
+- `result: "passed"`.
+- 8 checks del flujo: oferta, match, ausencia de brechas, postulación, recordatorio, 6 hojas de Excel, cabecera CSV e ICS.
+- `metrics_ms` por paso (crear oferta, calcular match, postular, recordar, exportar).
+- Tamaño y SHA-256 de cada artefacto de payload.
 
 Verificación local:
 
 ```text
-applications.csv     820 bytes
-applications.xlsx  12264 bytes
-calendar.ics        2776 bytes
-matches.json         950 bytes
-run_manifest.json    989 bytes
-checksums.sha256     325 bytes
+applications.csv      820 bytes
+applications.xlsx   12271 bytes
+calendar.ics         2776 bytes
+matches.json          972 bytes
+quality_report.json  2109 bytes
+run_manifest.json    1312 bytes
+checksums.sha256      411 bytes
 ```
+
+Los checksums cubren 5 archivos de payload (`xlsx`, `csv`, `ics`, `matches`, `quality_report`). `run_manifest.json` y `checksums.sha256` no se incluyen para evitar una dependencia circular.
 
 ---
 

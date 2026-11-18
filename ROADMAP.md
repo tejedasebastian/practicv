@@ -321,6 +321,7 @@ feat: add exports and bilingual UI
   - fecha vencida,
   - must-have faltante.
 - [x] Artefactos con checksums.
+- [x] `quality_report.json` con checks del flujo, métricas por paso y hashes.
 - [x] README con capturas y métricas reales.
 - [x] README.en.md.
 - [x] Video demo corto (`docs/assets/demo.webm`).

@@ -327,6 +327,8 @@ artifacts/e2e/
 └─ checksums.sha256
 ```
 
+`quality_report.json` registra los checks del flujo (creación de oferta, match sin brechas, postulación, recordatorio, hojas del Excel, cabecera CSV e ICS), métricas de tiempo por paso y hashes de los artefactos de payload.
+
 ---
 
 ## Métricas
@@ -339,7 +341,8 @@ artifacts/e2e/
 | Matches en seed sintético | 505 |
 | Tests E2E backend | 18 passed |
 | Tests E2E UI (Playwright) | 5 passed |
-| Tiempo E2E backend | ~13.3 s |
+| Tiempo E2E backend | ~10 s |
+| Checksums de artefactos | 5/5 OK |
 | Flujos críticos cubiertos | Perfil/CV, ofertas, match, postulaciones, exportaciones |
 | Dogfooding con ofertas reales | Pendiente (manual, opcional) |
 
