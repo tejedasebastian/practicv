@@ -20,8 +20,10 @@ TEST_DATABASE_URL = os.environ.get(
     "PRACTICV_TEST_DATABASE_URL",
     "postgresql+psycopg://practicv:practicv@localhost:5434/practicv_test",
 )
+MCP_FIXTURE_DIR = Path(__file__).resolve().parent / "mcp_fixtures"
 os.environ["PRACTICV_DATABASE_URL"] = TEST_DATABASE_URL
 os.environ["PRACTICV_ENVIRONMENT"] = "test"
+os.environ["PRACTICV_MCP_FIXTURE_DIR"] = str(MCP_FIXTURE_DIR)
 
 BACKEND_DIR = Path(__file__).resolve().parents[2]
 

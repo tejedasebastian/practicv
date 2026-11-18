@@ -50,6 +50,83 @@ export type AIResult = {
   suggestions: string[];
 };
 
+export type Offer = {
+  id: string;
+  source_type: string;
+  external_id: string | null;
+  source_url: string | null;
+  captured_at: string;
+  title: string;
+  company: string;
+  location: string | null;
+  modality: string | null;
+  salary_text: string | null;
+  salary_amount: number | null;
+  salary_currency: string | null;
+  description: string | null;
+  requirements_text: string | null;
+  published_at: string | null;
+  deadline_at: string | null;
+  parse_confidence: number | null;
+  dedupe_hash: string | null;
+};
+
+export type OfferMutation = {
+  offer: Offer;
+  duplicate: boolean;
+};
+
+export type OfferImportResult = {
+  created: number;
+  duplicates: number;
+  errors: Array<{ row: number; message: string; details: Record<string, unknown> }>;
+  warnings: string[];
+  total_rows: number;
+  preview: Array<{
+    title: string;
+    company: string;
+    salary_amount: number | null;
+    source_url: string | null;
+    duplicate: boolean;
+  }>;
+  offer_ids: string[];
+};
+
+export type MCPSearchResult = {
+  results: Array<{
+    titulo: string;
+    empresa: string;
+    ubicacion?: string;
+    subvencion?: string;
+    modalidad?: string;
+    vence?: string;
+    url: string;
+    id_oferta?: string;
+  }>;
+  total: number;
+  warning: string | null;
+};
+
+export type SourceStatus = {
+  mcp: "available" | "unavailable" | string;
+  detail: string | null;
+  filters: Record<string, unknown> | null;
+};
+
+export type OfferPayload = {
+  title: string;
+  company: string;
+  source_url?: string | null;
+  location?: string | null;
+  modality?: string | null;
+  salary_text?: string | null;
+  salary_amount?: number | null;
+  description?: string | null;
+  requirements_text?: string | null;
+  deadline_at?: string | null;
+};
+
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_URL}${path}`, init);
   if (!response.ok) {
@@ -118,3 +195,60 @@ export async function analyzeCV(
     body: JSON.stringify({ text, consent }),
   });
 }
+
+export async function createOffer(payload: OfferPayload): Promise<OfferMutation> {
+  return request<OfferMutation>("/api/v1/offers/manual", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function importOffersCsv(file: File): Promise<OfferImportResult> {
+  const form = new FormData();
+  form.append("file", file);
+  return request<OfferImportResult>("/api/v1/offers/import/csv", {
+    method: "POST",
+    body: form,
+  });
+}
+
+export async function captureOfferUrl(url: string): Promise<OfferMutation> {
+  return request<OfferMutation>("/api/v1/offers/capture-url", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ url }),
+  });
+}
+
+export async function searchMCP(payload: {
+  q?: string;
+  modality?: string;
+  career?: string;
+  department?: string;
+  limit?: number;
+}): Promise<MCPSearchResult> {
+  return request<MCPSearchResult>("/api/v1/offers/mcp/search", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function importMCP(urls: string[]): Promise<OfferImportResult> {
+  return request<OfferImportResult>("/api/v1/offers/mcp/import", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ urls }),
+  });
+}
+
+export async function listOffers(sourceType?: string): Promise<Offer[]> {
+  const query = sourceType ? `?source_type=${encodeURIComponent(sourceType)}` : "";
+  return request<Offer[]>(`/api/v1/offers${query}`);
+}
+
+export async function getSourceStatus(): Promise<SourceStatus> {
+  return request<SourceStatus>("/api/v1/offers/sources/status");
+}
+

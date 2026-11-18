@@ -23,3 +23,8 @@ class ConflictError(DomainError):
 class ValidationError(DomainError):
     code = "validation_error"
     status_code = 422
+
+
+class MCPUnavailableError(DomainError):
+    code = "mcp_unavailable"
+    status_code = 503

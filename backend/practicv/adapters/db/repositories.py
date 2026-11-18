@@ -27,7 +27,7 @@ from practicv.domain.entities import (
     Skill,
     utcnow,
 )
-from practicv.domain.enums import ApplicationStatus, ReminderStatus, SkillSource
+from practicv.domain.enums import ApplicationStatus, ReminderStatus, SkillSource, SourceType
 from practicv.domain.errors import ConflictError, NotFoundError
 
 
@@ -367,10 +367,11 @@ class OfferRepository:
         row = self.session.scalar(select(OfferModel).where(OfferModel.dedupe_hash == dedupe_hash))
         return _offer(row) if row else None
 
-    def list(self, limit: int = 50) -> list[Offer]:
-        rows = self.session.scalars(
-            select(OfferModel).order_by(OfferModel.captured_at.desc()).limit(limit)
-        ).all()
+    def list(self, limit: int = 50, source_type: SourceType | None = None) -> list[Offer]:
+        statement = select(OfferModel).order_by(OfferModel.captured_at.desc()).limit(limit)
+        if source_type is not None:
+            statement = statement.where(OfferModel.source_type == source_type)
+        rows = self.session.scalars(statement).all()
         return [_offer(row) for row in rows]
 
     def count(self) -> int:

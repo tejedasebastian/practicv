@@ -30,6 +30,12 @@ export default function Home() {
           >
             {t.nav.profile}
           </Link>
+          <Link
+            href="/ofertas"
+            className="text-sm font-medium text-slate-600 transition hover:text-emerald-700"
+          >
+            {t.nav.offers}
+          </Link>
           <div className="flex items-center gap-2 rounded-full border border-slate-300 bg-white p-1 text-sm shadow-sm">
             <span className="px-2 text-slate-500">{t.nav.language}</span>
             <button

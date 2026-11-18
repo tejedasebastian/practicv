@@ -1,0 +1,41 @@
+{
+  "consulta": {
+    "q": "datos",
+    "modalidad": "PREPROFESIONAL",
+    "carrera_id": "18",
+    "departamento_id": "15",
+    "orden": "1-fecha_publicacion"
+  },
+  "resultados": [
+    {
+      "titulo": "Practicante de Datos MCP",
+      "empresa": "MCP Corp",
+      "requiere": "Ingeniería de Sistemas",
+      "ubicacion": "Lima",
+      "subvencion": "S/ 1,300.00 soles",
+      "subvencion_monto": 1300.0,
+      "modalidad": "Híbrido",
+      "asistencia": "Presencial",
+      "vence": "2026-12-31",
+      "vence_texto": "31/12/2026",
+      "url": "https://www.practicas.pe/oferta-convocatoria-9001.html",
+      "id_oferta": "9001"
+    },
+    {
+      "titulo": "Practicante de BI MCP",
+      "empresa": "MCP BI",
+      "requiere": "Ingeniería de Software",
+      "ubicacion": "Lima",
+      "subvencion": "S/ 1,500.00 soles",
+      "subvencion_monto": 1500.0,
+      "modalidad": "Presencial",
+      "asistencia": "Presencial",
+      "vence": "2026-12-15",
+      "vence_texto": "15/12/2026",
+      "url": "https://www.practicas.pe/oferta-convocatoria-9002.html",
+      "id_oferta": "9002"
+    }
+  ],
+  "total_devueltos": 2,
+  "advertencia": null
+}

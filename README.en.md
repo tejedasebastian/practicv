@@ -4,7 +4,7 @@
 
 PractiCV turns any internship posting into a decision: it captures the offer, compares it with your CV, explains your gaps, and organizes your application in a Kanban board with reminders.
 
-> **Status:** Phase 2 complete (profile, PDF/DOCX CV, section and skill parser, manual editing, and opt-in AI analysis). The v0.1.0 product is still in development. This README describes the finished product; screenshots and metrics will be completed as the roadmap closes.
+> **Status:** Phase 3 complete (profile/CV + offers from manual, CSV/Excel, URL, and MCP with deduplication and provenance). The v0.1.0 product is still in development. This README describes the finished product; screenshots and metrics will be completed as the roadmap closes.
 >
 > **Español:** [README.md](README.md)
 
@@ -60,6 +60,19 @@ It is not a job board, it does not auto-apply, and it does not promise employmen
 - The original file is stored locally in `cv_documents.file_bytes`.
 - AI analysis **only when sections or skills are missing** and with explicit consent.
 - Email and phone are redacted (`[EMAIL]`, `[PHONE]`) before sending text to the AI adapter.
+
+---
+
+## Offers and sources
+
+- **Manual:** validated form.
+- **CSV/Excel:** downloadable template, preview, and row-level errors.
+- **URL:** `JobPosting` JSON-LD and OpenGraph; only extracted text is stored, never raw HTML.
+- **MCP `practicas-pe`:** search, detail, and import; if unavailable, the UI falls back to text/CSV/URL.
+- **Normalization:** canonical URL, salary, dates, modality, and location.
+- **Deduplication:** `dedupe_hash` by canonical URL or title + company + deadline.
+- **Provenance:** `source_type`, `source_url`, and `captured_at` on every offer.
+- **Limits:** 5 MB per CV/file, 500 rows per import.
 
 ---
 

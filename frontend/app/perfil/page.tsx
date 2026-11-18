@@ -188,6 +188,12 @@ export default function ProfilePage() {
           <Link href="/" className="text-sm font-medium text-slate-600 hover:text-emerald-700">
             {t.home}
           </Link>
+          <Link
+            href="/ofertas"
+            className="text-sm font-medium text-slate-600 hover:text-emerald-700"
+          >
+            {dictionaries[locale].nav.offers}
+          </Link>
           <div className="flex items-center gap-1 rounded-full border border-slate-300 bg-white p-1 text-sm">
             <button
               type="button"

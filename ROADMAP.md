@@ -147,39 +147,51 @@ feat: add profile and CV parsing
 
 ## Fase 3 — Ofertas y fuentes
 
-- [ ] Captura manual con formulario y validación.
-- [ ] Importación CSV/Excel con plantilla y previsualización.
-- [ ] Captura desde URL con JSON-LD/OpenGraph.
-- [ ] Adaptador MCP `practicas-pe`:
+- [x] Captura manual con formulario y validación.
+- [x] Importación CSV/Excel con plantilla y previsualización.
+- [x] Captura desde URL con JSON-LD/OpenGraph.
+- [x] Adaptador MCP `practicas-pe`:
   - `listar_filtros`,
   - `buscar_practicas`,
   - `obtener_practica`.
-- [ ] Normalización de ofertas.
-- [ ] Deduplicación por URL canónica y `dedupe_hash`.
-- [ ] Procedencia (`source_type`, `source_url`, `captured_at`).
-- [ ] Fallback claro si el MCP falla.
+- [x] Normalización de ofertas.
+- [x] Deduplicación por URL canónica y `dedupe_hash`.
+- [x] Procedencia (`source_type`, `source_url`, `captured_at`).
+- [x] Fallback claro si el MCP falla.
 
 **E2E del checkpoint:**
 
-- Agregar 4 ofertas:
+- [x] Agregar 4 ofertas:
   1. manual completa,
   2. CSV sin sueldo,
-  3. URL con JSON-LD (fixture),
+  3. URL con JSON-LD (fixture local),
   4. MCP (fixture).
-- Agregar una duplicada por URL.
-- Verificar:
-  - 4 ofertas únicas,
-  - duplicado detectado,
-  - campos faltantes visibles,
-  - procedencia correcta,
-  - fallback si el MCP no responde.
+- [x] Agregar una duplicada por URL.
+- [x] Verificar:
+  - [x] 4 ofertas únicas,
+  - [x] duplicado detectado,
+  - [x] campos faltantes visibles,
+  - [x] procedencia correcta,
+  - [x] fallback si el MCP no responde.
+
+**Evidencia local:**
+
+- `pytest tests/e2e -v` → **13 passed** (Fases 1–3).
+- `ruff format` y `ruff check` → All checks passed.
+- `npm run lint`, `npm run typecheck`, `npm run build` → OK; `/ofertas` generada.
+- `npx playwright test` → **3 passed** (landing, perfil/CV, ofertas).
+- CSV: 1 creada + 1 duplicada + warning por sueldo faltante.
+- URL: JSON-LD parseado, HTML strippeado, `source_type=url`.
+- MCP: 2 resultados, 2 importadas, segunda importación 2 duplicadas.
+- Fallback: `MCPUnavailableError` con código `mcp_unavailable` y status 503.
+- Plantilla: `frontend/public/plantilla_ofertas.csv`.
 
 **Criterio de aceptación:**
 
-- Ninguna fuente es obligatoria.
-- La app funciona sin MCP.
-- No se guarda HTML crudo.
-- No se llama al sitio real en tests.
+- [x] Ninguna fuente es obligatoria.
+- [x] La app funciona sin MCP.
+- [x] No se guarda HTML crudo.
+- [x] No se llama al sitio real en tests.
 
 **Commit sugerido:**
 

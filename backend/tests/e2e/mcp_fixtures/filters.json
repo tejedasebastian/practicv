@@ -1,0 +1,16 @@
+{
+  "carreras": [
+    { "id": "18", "nombre": "Ingeniería de Sistemas" },
+    { "id": "19", "nombre": "Ingeniería de Software" }
+  ],
+  "departamentos": [
+    { "id": "15", "nombre": "Lima" },
+    { "id": "14", "nombre": "La Libertad" }
+  ],
+  "modalidades": ["preprofesional", "profesional"],
+  "orden": {
+    "recientes": "1-fecha_publicacion",
+    "mayor_subvencion": "1-salario",
+    "por_vencer": "0-fin_convocatoria"
+  }
+}

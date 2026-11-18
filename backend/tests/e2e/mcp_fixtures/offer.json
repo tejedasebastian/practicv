@@ -1,0 +1,34 @@
+{
+  "offers": [
+    {
+      "url": "https://www.practicas.pe/oferta-convocatoria-9001.html",
+      "titulo": "Practicante de Datos MCP",
+      "empresa": "MCP Corp",
+      "ubicacion": "Lima",
+      "modalidad": "Híbrido",
+      "subvencion": "S/ 1,300.00 soles",
+      "subvencion_monto": 1300.0,
+      "requisitos": "Python, SQL y Power BI.",
+      "descripcion": "Oferta MCP de datos para análisis y reportes.",
+      "publicado": "2026-11-10",
+      "vence": "2026-12-31",
+      "id_oferta": "9001",
+      "parse_confidence": 0.95
+    },
+    {
+      "url": "https://www.practicas.pe/oferta-convocatoria-9002.html",
+      "titulo": "Practicante de BI MCP",
+      "empresa": "MCP BI",
+      "ubicacion": "Lima",
+      "modalidad": "Presencial",
+      "subvencion": "S/ 1,500.00 soles",
+      "subvencion_monto": 1500.0,
+      "requisitos": "Power BI, DAX y SQL.",
+      "descripcion": "Oferta MCP de BI para dashboards.",
+      "publicado": "2026-11-12",
+      "vence": "2026-12-15",
+      "id_oferta": "9002",
+      "parse_confidence": 0.95
+    }
+  ]
+}

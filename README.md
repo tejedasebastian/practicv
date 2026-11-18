@@ -4,7 +4,7 @@
 
 PractiCV convierte cualquier oferta de prácticas en una decisión: captura la oferta, la compara con tu CV, te explica qué te falta y organiza tu postulación en un Kanban con recordatorios.
 
-> **Estado:** Fase 2 completada (perfil, CV PDF/DOCX, parser de secciones y habilidades, edición manual y análisis IA opt-in). El producto v0.1.0 sigue en desarrollo. Este README describe el producto terminado; las capturas y métricas se completan al cerrar el roadmap.
+> **Estado:** Fase 3 completada (perfil/CV + ofertas desde manual, CSV/Excel, URL y MCP con deduplicación y procedencia). El producto v0.1.0 sigue en desarrollo. Este README describe el producto terminado; las capturas y métricas se completan al cerrar el roadmap.
 >
 > **English:** [README.en.md](README.en.md)
 
@@ -60,6 +60,19 @@ No es un job board, no postula automáticamente y no promete empleo.
 - El archivo original se guarda localmente en `cv_documents.file_bytes`.
 - Análisis con IA **solo si faltan secciones o habilidades** y con consentimiento explícito.
 - Antes de enviar texto a la IA se redactan correo y teléfono (`[EMAIL]`, `[PHONE]`).
+
+---
+
+## Ofertas y fuentes
+
+- **Manual:** formulario con validación.
+- **CSV/Excel:** plantilla descargable, previsualización y errores por fila.
+- **URL:** JSON-LD `JobPosting` y OpenGraph; solo se guarda texto extraído, nunca HTML crudo.
+- **MCP `practicas-pe`:** búsqueda, detalle e importación; si no está disponible, la UI ofrece texto/CSV/URL.
+- **Normalización:** URL canónica, sueldo, fechas, modalidad y ubicación.
+- **Deduplicación:** `dedupe_hash` por URL canónica o título + empresa + fecha.
+- **Procedencia:** `source_type`, `source_url` y `captured_at` en cada oferta.
+- **Límites:** 5 MB por CV/archivo, 500 filas por importación.
 
 ---
 
