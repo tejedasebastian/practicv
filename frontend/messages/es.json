@@ -1,0 +1,30 @@
+{
+  "nav": {
+    "language": "Idioma",
+    "es": "ES",
+    "en": "EN"
+  },
+  "hero": {
+    "eyebrow": "Fase 0 · Fundación",
+    "title": "PractiCV",
+    "subtitle": "Convierte cualquier oferta de prácticas en una decisión.",
+    "description": "Captura ofertas, compara con tu CV, entiende tus brechas y organiza tu postulación en un solo lugar.",
+    "primaryCta": "Ver el roadmap",
+    "secondaryCta": "Leer la especificación"
+  },
+  "features": [
+    {
+      "title": "Captura",
+      "description": "Texto, CSV, URL o el MCP de practicas.pe."
+    },
+    {
+      "title": "Match explicable",
+      "description": "Score, brechas y evidencia de tu CV."
+    },
+    {
+      "title": "Seguimiento",
+      "description": "Kanban, recordatorios y exportación."
+    }
+  ],
+  "footer": "Construido con FastAPI, Next.js y SQLite."
+}

@@ -1,0 +1,30 @@
+{
+  "nav": {
+    "language": "Language",
+    "es": "ES",
+    "en": "EN"
+  },
+  "hero": {
+    "eyebrow": "Phase 0 · Foundation",
+    "title": "PractiCV",
+    "subtitle": "Turn any internship posting into a decision.",
+    "description": "Capture offers, compare them with your CV, understand your gaps, and organize your application in one place.",
+    "primaryCta": "View the roadmap",
+    "secondaryCta": "Read the spec"
+  },
+  "features": [
+    {
+      "title": "Capture",
+      "description": "Text, CSV, URL, or the practicas.pe MCP."
+    },
+    {
+      "title": "Explainable match",
+      "description": "Score, gaps, and evidence from your CV."
+    },
+    {
+      "title": "Tracking",
+      "description": "Kanban, reminders, and export."
+    }
+  ],
+  "footer": "Built with FastAPI, Next.js, and SQLite."
+}
