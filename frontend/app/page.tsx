@@ -1,17 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
-import { dictionaries, type Locale } from "@/lib/i18n";
+import { dictionaries } from "@/lib/i18n";
+import { useLocale } from "@/lib/useLocale";
 
 export default function Home() {
-  const [locale, setLocale] = useState<Locale>("es");
+  const [locale, setLocale] = useLocale();
   const t = dictionaries[locale];
-
-  useEffect(() => {
-    document.documentElement.lang = locale;
-  }, [locale]);
 
   return (
     <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
@@ -35,6 +31,12 @@ export default function Home() {
             className="text-sm font-medium text-slate-600 transition hover:text-emerald-700"
           >
             {t.nav.offers}
+          </Link>
+          <Link
+            href="/postulaciones"
+            className="text-sm font-medium text-slate-600 transition hover:text-emerald-700"
+          >
+            {t.nav.applications}
           </Link>
           <div className="flex items-center gap-2 rounded-full border border-slate-300 bg-white p-1 text-sm shadow-sm">
             <span className="px-2 text-slate-500">{t.nav.language}</span>

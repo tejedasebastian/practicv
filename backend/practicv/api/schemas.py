@@ -5,6 +5,13 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from practicv.domain.enums import (
+    ApplicationStatus,
+    MatchDecision,
+    ReminderChannel,
+    ReminderStatus,
+)
+
 
 class ProfileCreate(BaseModel):
     full_name: str = Field(min_length=2, max_length=200)
@@ -194,3 +201,113 @@ class SourceStatusResponse(BaseModel):
     mcp: str
     detail: str | None = None
     filters: dict | None = None
+
+
+class MatchRequest(BaseModel):
+    profile_id: UUID
+    offer_id: UUID
+
+
+class MatchResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    profile_id: UUID
+    offer_id: UUID
+    overall_score: float
+    must_have_score: float
+    confidence: float
+    decision: MatchDecision
+    gaps_json: list[dict]
+    explanation_json: list[dict]
+    overridden: bool
+    override_reason: str | None
+    created_at: datetime
+
+
+class MatchWithOfferResponse(BaseModel):
+    match: MatchResponse
+    offer: OfferResponse
+
+
+class MatchOverrideRequest(BaseModel):
+    decision: MatchDecision
+    reason: str | None = None
+
+
+class ApplicationCreate(BaseModel):
+    profile_id: UUID
+    offer_id: UUID
+    status: ApplicationStatus = ApplicationStatus.SAVED
+    applied_at: datetime | None = None
+    next_action_at: datetime | None = None
+    next_action_note: str | None = None
+    notes: str | None = None
+    cv_document_id: UUID | None = None
+
+
+class ApplicationUpdate(BaseModel):
+    status: ApplicationStatus | None = None
+    next_action_at: datetime | None = None
+    next_action_note: str | None = None
+    notes: str | None = None
+
+
+class ApplicationResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    profile_id: UUID
+    offer_id: UUID
+    status: ApplicationStatus
+    applied_at: datetime | None
+    next_action_at: datetime | None
+    next_action_note: str | None
+    notes: str | None
+    cv_document_id: UUID | None
+    created_at: datetime
+    updated_at: datetime
+
+
+class ApplicationWithOfferResponse(BaseModel):
+    application: ApplicationResponse
+    offer: OfferResponse
+    match: MatchResponse | None = None
+
+
+class ApplicationMutationResponse(BaseModel):
+    application: ApplicationResponse
+    duplicate: bool
+
+
+class ApplicationEventCreate(BaseModel):
+    event_type: str = Field(min_length=2, max_length=50)
+    event_at: datetime
+    notes: str | None = None
+
+
+class ApplicationEventResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    application_id: UUID
+    event_type: str
+    event_at: datetime
+    notes: str | None
+
+
+class ReminderCreate(BaseModel):
+    due_at: datetime
+    channel: ReminderChannel = ReminderChannel.IN_APP
+    message: str | None = None
+
+
+class ReminderResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    application_id: UUID
+    due_at: datetime
+    channel: ReminderChannel
+    message: str | None
+    status: ReminderStatus

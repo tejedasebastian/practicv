@@ -3,7 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from practicv.api.errors import domain_error_handler
 from practicv.api.routes.analytics import router as analytics_router
+from practicv.api.routes.applications import router as applications_router
+from practicv.api.routes.exports import router as exports_router
 from practicv.api.routes.health import router as health_router
+from practicv.api.routes.matches import router as matches_router
 from practicv.api.routes.offers import router as offers_router
 from practicv.api.routes.profiles import router as profiles_router
 from practicv.config import get_settings
@@ -33,6 +36,9 @@ app.add_exception_handler(DomainError, domain_error_handler)
 app.include_router(health_router)
 app.include_router(profiles_router, prefix="/api/v1")
 app.include_router(offers_router, prefix="/api/v1")
+app.include_router(matches_router, prefix="/api/v1")
+app.include_router(applications_router, prefix="/api/v1")
+app.include_router(exports_router, prefix="/api/v1")
 app.include_router(analytics_router, prefix="/api/v1")
 
 

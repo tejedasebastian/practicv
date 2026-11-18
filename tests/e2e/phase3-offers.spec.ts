@@ -147,4 +147,6 @@ test("manual offer and MCP search/import flow", async ({ page }) => {
   await page.getByTestId("mcp-import").click();
   await expect(page.getByTestId("import-summary")).toContainText("Creadas: 2");
   await expect(page.getByTestId("offers-list")).toContainText("Practicante de Datos MCP");
+
+  await page.screenshot({ path: "docs/assets/offers.png", fullPage: true });
 });

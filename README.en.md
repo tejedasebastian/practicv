@@ -4,7 +4,7 @@
 
 PractiCV turns any internship posting into a decision: it captures the offer, compares it with your CV, explains your gaps, and organizes your application in a Kanban board with reminders.
 
-> **Status:** Phase 3 complete (profile/CV + offers from manual, CSV/Excel, URL, and MCP with deduplication and provenance). The v0.1.0 product is still in development. This README describes the finished product; screenshots and metrics will be completed as the roadmap closes.
+> **Status:** **v0.1.0 MVP complete**. Profile/CV, multi-source offers, explainable matching, Kanban, reminders, and exports. Real-offer dogfooding remains an optional manual step.
 >
 > **Español:** [README.md](README.md)
 
@@ -40,13 +40,17 @@ It is not a job board, it does not auto-apply, and it does not promise employmen
 
 ## Demo
 
-> Screenshots pending implementation.
+[Watch a short demo video](docs/assets/demo.webm)
+
+![Landing](docs/assets/landing.png)
+
+![Profile and CV](docs/assets/profile-cv.png)
+
+![Offers and sources](docs/assets/offers.png)
 
 ![CV–offer match](docs/assets/match.png)
 
 ![Application Kanban](docs/assets/kanban.png)
-
-![Bilingual view](docs/assets/bilingual.png)
 
 ---
 
@@ -270,6 +274,21 @@ PractiCV uses **PostgreSQL 17** with SQLAlchemy 2, Alembic, and `psycopg` 3.
 
 ---
 
+## Applications and reminders
+
+- Five-state Kanban: saved, applied, interview, rejected, and offer.
+- Move cards by drag-and-drop or with a keyboard-accessible selector.
+- Notes, next action, and event history.
+- Date reminders and `.ics` calendar export.
+- Filters by status, deadline, and match presence/score.
+
+## Exports
+
+- **Excel:** `Postulaciones`, `Ofertas`, `Matches`, `Brechas`, `Timeline`, and `Habilidades`.
+- **CSV:** application funnel.
+- **ICS:** deadlines, next actions, and reminders.
+- Downloads from `/postulaciones` with `profile_id`.
+
 ## Privacy
 
 - Local-first: your CV and applications live on your machine.
@@ -312,16 +331,17 @@ artifacts/e2e/
 
 ## Metrics
 
-> Completed with E2E and dogfooding. No invented numbers.
+> Real E2E and synthetic-seed metrics. Real-offer dogfooding remains a manual pending step.
 
 | Metric | Value |
 |---|---|
-| Offers evaluated in dogfooding | `[pending]` |
-| Median time to evaluate an offer | `[pending]` |
-| Applications tracked | `[pending]` |
-| Gaps discovered | `[pending]` |
-| E2E runtime | `[pending]` |
-| Critical flow coverage | `[pending]` |
+| Offers in synthetic seed | 1,005 |
+| Matches in synthetic seed | 505 |
+| Backend E2E tests | 18 passed |
+| UI E2E tests (Playwright) | 5 passed |
+| Backend E2E runtime | ~13.3 s |
+| Critical flows covered | Profile/CV, offers, match, applications, exports |
+| Real-offer dogfooding | Pending (manual, optional) |
 
 ---
 
@@ -340,7 +360,7 @@ artifacts/e2e/
 
 ## Roadmap
 
-- v0.1: profile, CV, capture, match, Kanban, reminders, and export.
+- **v0.1 (MVP complete):** profile, CV, multi-source capture, match, Kanban, reminders, and export.
 - v0.2: bookmarklet, email alerts, Practilizate adapter, Power Automate, Power BI.
 - v0.3: multiple CV versions and a public demo deploy.
 

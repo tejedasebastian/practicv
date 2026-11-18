@@ -4,7 +4,7 @@
 
 PractiCV convierte cualquier oferta de prácticas en una decisión: captura la oferta, la compara con tu CV, te explica qué te falta y organiza tu postulación en un Kanban con recordatorios.
 
-> **Estado:** Fase 3 completada (perfil/CV + ofertas desde manual, CSV/Excel, URL y MCP con deduplicación y procedencia). El producto v0.1.0 sigue en desarrollo. Este README describe el producto terminado; las capturas y métricas se completan al cerrar el roadmap.
+> **Estado:** **v0.1.0 MVP completo**. Perfil/CV, ofertas multi-fuente, matching explicable, Kanban, recordatorios y exportaciones. El dogfooding con ofertas reales queda como paso manual opcional.
 >
 > **English:** [README.en.md](README.en.md)
 
@@ -40,13 +40,17 @@ No es un job board, no postula automáticamente y no promete empleo.
 
 ## Demo
 
-> Capturas pendientes de la implementación.
+[Ver demo corta en video](docs/assets/demo.webm)
+
+![Landing](docs/assets/landing.png)
+
+![Perfil y CV](docs/assets/profile-cv.png)
+
+![Ofertas y fuentes](docs/assets/offers.png)
 
 ![Match CV–oferta](docs/assets/match.png)
 
 ![Kanban de postulaciones](docs/assets/kanban.png)
-
-![Vista bilingüe](docs/assets/bilingual.png)
 
 ---
 
@@ -270,6 +274,21 @@ PractiCV usa **PostgreSQL 17** con SQLAlchemy 2, Alembic y `psycopg` 3.
 
 ---
 
+## Postulaciones y recordatorios
+
+- Kanban con cinco estados: guardada, postulada, entrevista, rechazada y oferta.
+- Movimiento por arrastrar y soltar o por selector accesible con teclado.
+- Notas, próxima acción e historial de eventos.
+- Recordatorios por fecha y exportación a calendario `.ics`.
+- Filtros por estado, vencimiento y presencia/score de match.
+
+## Exportaciones
+
+- **Excel:** `Postulaciones`, `Ofertas`, `Matches`, `Brechas`, `Timeline` y `Habilidades`.
+- **CSV:** embudo de postulaciones.
+- **ICS:** fechas límite, próximas acciones y recordatorios.
+- Descargas desde `/postulaciones` con `profile_id`.
+
 ## Privacidad
 
 - Local-first: tu CV y tus postulaciones viven en tu máquina.
@@ -312,16 +331,17 @@ artifacts/e2e/
 
 ## Métricas
 
-> Se completan con el E2E y el dogfooding. No se inventan.
+> Métricas reales del E2E y del seed sintético. El dogfooding con ofertas reales queda pendiente como paso manual.
 
 | Métrica | Valor |
 |---|---|
-| Ofertas evaluadas en dogfooding | `[pendiente]` |
-| Tiempo mediano para evaluar una oferta | `[pendiente]` |
-| Postulaciones registradas | `[pendiente]` |
-| Brechas descubiertas | `[pendiente]` |
-| Tiempo de ejecución del E2E | `[pendiente]` |
-| Cobertura de flujos críticos | `[pendiente]` |
+| Ofertas en seed sintético | 1,005 |
+| Matches en seed sintético | 505 |
+| Tests E2E backend | 18 passed |
+| Tests E2E UI (Playwright) | 5 passed |
+| Tiempo E2E backend | ~13.3 s |
+| Flujos críticos cubiertos | Perfil/CV, ofertas, match, postulaciones, exportaciones |
+| Dogfooding con ofertas reales | Pendiente (manual, opcional) |
 
 ---
 
@@ -340,7 +360,7 @@ artifacts/e2e/
 
 ## Roadmap
 
-- v0.1: perfil, CV, captura, match, Kanban, recordatorios y export.
+- **v0.1 (MVP completo):** perfil, CV, captura multi-fuente, match, Kanban, recordatorios y export.
 - v0.2: bookmarklet, correos de alerta, adaptador Practilizate, Power Automate, Power BI.
 - v0.3: múltiples versiones de CV y deploy público de la demo.
 

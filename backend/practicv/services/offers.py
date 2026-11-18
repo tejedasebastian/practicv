@@ -21,6 +21,7 @@ from practicv.adapters.db.repositories import OfferRepository
 from practicv.domain.entities import Offer, utcnow
 from practicv.domain.enums import SourceType
 from practicv.domain.errors import ConflictError, ValidationError
+from practicv.services.matching import sync_offer_skills
 
 MAX_IMPORT_ROWS = 500
 MONEY_RE = re.compile(r"(\d[\d.,]*)")
@@ -217,14 +218,17 @@ def save_offer(session: Session, raw: dict, source_type: SourceType) -> tuple[Of
     repo = OfferRepository(session)
     existing = repo.get_by_dedupe_hash(offer.dedupe_hash) if offer.dedupe_hash else None
     if existing is not None:
+        sync_offer_skills(session, existing)
         return existing, True
     try:
         created = repo.create(offer)
     except ConflictError:
         existing = repo.get_by_dedupe_hash(offer.dedupe_hash) if offer.dedupe_hash else None
         if existing is not None:
+            sync_offer_skills(session, existing)
             return existing, True
         raise
+    sync_offer_skills(session, created)
     return created, False
 
 

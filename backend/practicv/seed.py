@@ -40,6 +40,7 @@ from practicv.domain.enums import (
     SkillSource,
     SourceType,
 )
+from practicv.services.matching import sync_offer_skills
 
 DEMO_EMAIL = "demo@practicv.local"
 DEMO_HASH_PREFIX = "demo-"
@@ -266,6 +267,7 @@ def seed_demo(session: Session, volume: int = 1000) -> SeedResult:
             )
         )
         offers.append(offer)
+        sync_offer_skills(session, offer)
         match_repo.create(
             Match(
                 profile_id=profile.id,

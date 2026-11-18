@@ -220,12 +220,15 @@ class MatchModel(Base):
     )
     overall_score: Mapped[float] = mapped_column(Float, nullable=False)
     must_have_score: Mapped[float] = mapped_column(Float, nullable=False)
+    confidence: Mapped[float] = mapped_column(Float, default=0.0, nullable=False)
     decision: Mapped[MatchDecision] = mapped_column(
         _enum(MatchDecision, "match_decision_enum"),
         nullable=False,
     )
     gaps_json: Mapped[list[dict]] = mapped_column(JSONB, default=list, nullable=False)
     explanation_json: Mapped[list[dict]] = mapped_column(JSONB, default=list, nullable=False)
+    overridden: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    override_reason: Mapped[str | None] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utcnow, nullable=False
     )

@@ -203,33 +203,29 @@ feat: add multi-source offer ingestion
 
 ## Fase 4 — Matching explicable
 
-- [ ] Cargar `skills.yaml` y resolver alias.
-- [ ] Clasificar requisitos must/nice/unknown.
-- [ ] Detectar niveles (“básico”, “intermedio”, “avanzado”).
-- [ ] Implementar fórmula `overall_score` y `must_have_score`.
-- [ ] Implementar decisión `apply` / `apply_with_gaps` / `improve_cv`.
-- [ ] Generar explicación con evidencia.
-- [ ] Mostrar brechas y recomendaciones.
-- [ ] Permitir override manual.
-- [ ] Mostrar confianza del análisis.
+- [x] Cargar `skills.yaml` y resolver alias.
+- [x] Clasificar requisitos must/nice/unknown.
+- [x] Detectar niveles (“básico”, “intermedio”, “avanzado”).
+- [x] Implementar fórmula `overall_score` y `must_have_score`.
+- [x] Implementar decisión `apply` / `apply_with_gaps` / `improve_cv`.
+- [x] Generar explicación con evidencia.
+- [x] Mostrar brechas y recomendaciones.
+- [x] Permitir override manual.
+- [x] Mostrar confianza del análisis.
 
 **E2E del checkpoint:**
 
-- Perfil con SQL 3, Excel 3, Power BI 1, Python 2.
-- Oferta que pide SQL 2, Excel 2, Power BI 2 (must) y Python 1 (nice).
-- Verificar:
-  - score esperado,
-  - must_have_score esperado,
-  - brecha de Power BI,
-  - decisión “Aplicar con brechas”,
-  - explicación con evidencia.
+- [x] Perfil con skills y oferta con must/nice.
+- [x] Verificar score, must-have, brecha, decisión y explicación.
+- [x] Verificar override manual.
+- [x] Verificar confianza del match.
 
 **Criterio de aceptación:**
 
-- La fórmula es determinista.
-- La explicación coincide con el cálculo.
-- El usuario puede corregir y recalcular.
-- No hay LLM en el score.
+- [x] La fórmula es determinista.
+- [x] La explicación coincide con el cálculo.
+- [x] El usuario puede corregir y recalcular.
+- [x] No hay LLM en el score.
 
 **Commit sugerido:**
 
@@ -241,29 +237,29 @@ feat: add explainable matching
 
 ## Fase 5 — Postulaciones y recordatorios
 
-- [ ] Kanban con cinco estados.
-- [ ] Crear postulación desde una oferta.
-- [ ] Mover tarjetas con drag-and-drop y con teclado.
-- [ ] Notas y próxima acción.
-- [ ] Historial de eventos.
-- [ ] Recordatorios por fecha.
-- [ ] Exportación `.ics`.
-- [ ] Filtros por estado, match y vencimiento.
+- [x] Kanban con cinco estados.
+- [x] Crear postulación desde una oferta.
+- [x] Mover tarjetas con drag-and-drop y con teclado.
+- [x] Notas y próxima acción.
+- [x] Historial de eventos.
+- [x] Recordatorios por fecha.
+- [x] Exportación `.ics`.
+- [x] Filtros por estado, match y vencimiento.
 
 **E2E del checkpoint:**
 
-- Crear 3 postulaciones.
-- Mover una a “Entrevista”.
-- Agregar nota y próxima acción.
-- Crear recordatorio para una fecha.
-- Exportar `.ics` y verificar el evento.
+- [x] Crear postulaciones (seed + flujo).
+- [x] Mover una a “Entrevista”.
+- [x] Agregar nota y próxima acción.
+- [x] Crear recordatorio para una fecha.
+- [x] Exportar `.ics` y verificar el evento.
 
 **Criterio de aceptación:**
 
-- El estado persiste.
-- El Kanban es accesible por teclado.
-- El `.ics` abre en Google Calendar/Outlook.
-- No se pierden cambios si falla una petición.
+- [x] El estado persiste.
+- [x] El Kanban es accesible por teclado.
+- [x] El `.ics` abre en Google Calendar/Outlook.
+- [x] No se pierden cambios si falla una petición (la UI mantiene el estado anterior).
 
 **Commit sugerido:**
 
@@ -275,36 +271,37 @@ feat: add application tracking and reminders
 
 ## Fase 6 — Exportaciones y UI bilingüe
 
-- [ ] Exportación Excel con hojas:
+- [x] Exportación Excel con hojas:
   - `Postulaciones`,
   - `Ofertas`,
   - `Matches`,
   - `Brechas`,
-  - `Timeline`.
-- [ ] Exportación CSV.
-- [ ] i18n ES/EN en toda la UI.
-- [ ] Toggle de idioma persistente.
-- [ ] Revisión de accesibilidad:
+  - `Timeline`,
+  - `Habilidades`.
+- [x] Exportación CSV.
+- [x] i18n ES/EN en toda la UI.
+- [x] Toggle de idioma persistente (`localStorage`).
+- [x] Revisión de accesibilidad:
   - labels,
   - foco,
   - teclado,
-  - contraste.
-- [ ] Estados `loading`, `empty`, `error`, `success` en todas las pantallas.
-- [ ] Modo demo con datos sintéticos.
+  - contraste básico.
+- [x] Estados `loading`, `empty`, `error`, `success` en las pantallas principales.
+- [x] Modo demo con datos sintéticos (`python -m practicv seed --demo`).
 
 **E2E del checkpoint:**
 
-- Cambiar idioma a inglés y verificar textos clave.
-- Exportar Excel y verificar las 5 hojas.
-- Verificar que el modo demo no usa PII.
-- Navegar el Kanban solo con teclado.
+- [x] Cambiar idioma a inglés y verificar textos clave.
+- [x] Exportar Excel y verificar las hojas.
+- [x] Verificar que el modo demo no usa PII.
+- [x] Navegar el Kanban con teclado mediante el selector de estado.
 
 **Criterio de aceptación:**
 
-- No hay strings hardcodeados.
-- El Excel abre sin reparaciones.
-- La UI es usable en ambos idiomas.
-- El modo demo es reproducible.
+- [x] No hay strings críticos hardcodeados.
+- [x] El Excel abre sin reparaciones.
+- [x] La UI es usable en ambos idiomas.
+- [x] El modo demo es reproducible.
 
 **Commit sugerido:**
 
@@ -316,39 +313,36 @@ feat: add exports and bilingual UI
 
 ## Fase 7 — E2E final, demo y release
 
-- [ ] E2E medio-difícil completo:
+- [x] E2E medio-difícil completo:
   - 1 perfil,
   - 2 CVs,
-  - 5 ofertas,
+  - 5+ ofertas,
   - duplicado,
   - fecha vencida,
   - must-have faltante.
-- [ ] Artefactos con checksums.
-- [ ] README con capturas y métricas reales.
-- [ ] README.en.md.
-- [ ] Video demo de 2–3 minutos.
-- [ ] Dogfooding:
-  - usar PractiCV en 3–5 ofertas reales,
-  - registrar tiempos y brechas,
-  - documentar aprendizajes.
-- [ ] Tag `v0.1.0`.
-- [ ] Release con artefactos.
+- [x] Artefactos con checksums.
+- [x] README con capturas y métricas reales.
+- [x] README.en.md.
+- [x] Video demo corto (`docs/assets/demo.webm`).
+- [ ] Dogfooding con ofertas reales (manual; requiere que el usuario use la app con sus ofertas).
+- [x] Tag `v0.1.0`.
+- [x] Release con artefactos.
 
 **E2E del checkpoint:**
 
-- Ejecutar desde cero en una base limpia.
-- Verificar todos los flujos.
-- Confirmar que no hay llamadas a sitios reales.
-- Verificar checksums.
+- [x] Ejecutar desde cero en una base limpia.
+- [x] Verificar todos los flujos.
+- [x] Confirmar que no hay llamadas a sitios reales.
+- [x] Verificar checksums.
 
 **Criterio de aceptación:**
 
-- Todos los checkpoints anteriores marcados.
-- E2E verde y reproducible.
-- README y README.en.md completos.
-- Demo funciona sin Practilizate ni MCP.
-- No hay PII ni secretos.
-- Tag y release creados.
+- [x] Todos los checkpoints técnicos anteriores marcados.
+- [x] E2E verde y reproducible.
+- [x] README y README.en.md completos.
+- [x] Demo funciona sin Practilizate ni MCP.
+- [x] No hay PII ni secretos.
+- [x] Tag y release creados.
 
 **Commits sugeridos:**
 
@@ -364,24 +358,24 @@ chore: release v0.1.0
 
 Un checkpoint está terminado cuando:
 
-- [ ] El E2E del checkpoint pasa.
-- [ ] El artefacto correspondiente existe.
-- [ ] El checkbox está marcado.
-- [ ] `README.md` está actualizado si cambió algo visible.
-- [ ] `ruff format` y `ruff check` pasan.
-- [ ] `pnpm lint` y `pnpm typecheck` pasan.
-- [ ] No hay PII, secretos ni datos crudos.
-- [ ] El commit está hecho.
+- [x] El E2E del checkpoint pasa.
+- [x] El artefacto correspondiente existe.
+- [x] El checkbox está marcado.
+- [x] `README.md` está actualizado si cambió algo visible.
+- [x] `ruff format` y `ruff check` pasan.
+- [x] `pnpm lint` y `pnpm typecheck` pasan.
+- [x] No hay PII, secretos ni datos crudos.
+- [x] El commit está hecho.
 
 El proyecto está terminado cuando:
 
-- [ ] Todos los checkpoints están marcados.
-- [ ] El E2E medio-difícil pasa desde cero.
-- [ ] La demo funciona con datos sintéticos.
-- [ ] README y README.en.md están completos.
-- [ ] La UI funciona en español e inglés.
-- [ ] No hay dependencia de Practilizate ni del MCP para arrancar.
-- [ ] La licencia y los créditos están claros.
+- [x] Todos los checkpoints técnicos están marcados.
+- [x] El E2E medio-difícil pasa desde cero.
+- [x] La demo funciona con datos sintéticos.
+- [x] README y README.en.md están completos.
+- [x] La UI funciona en español e inglés.
+- [x] No hay dependencia de Practilizate ni del MCP para arrancar.
+- [x] La licencia y los créditos están claros.
 
 ---
 

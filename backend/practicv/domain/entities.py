@@ -121,6 +121,9 @@ class Match:
     decision: MatchDecision
     gaps_json: list[dict] = field(default_factory=list)
     explanation_json: list[dict] = field(default_factory=list)
+    overridden: bool = False
+    override_reason: str | None = None
+    confidence: float = 0.0
     id: UUID = field(default_factory=uuid4)
     created_at: datetime = field(default_factory=utcnow)
 

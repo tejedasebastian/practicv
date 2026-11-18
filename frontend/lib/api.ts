@@ -126,6 +126,74 @@ export type OfferPayload = {
   deadline_at?: string | null;
 };
 
+export type Match = {
+  id: string;
+  profile_id: string;
+  offer_id: string;
+  overall_score: number;
+  must_have_score: number;
+  confidence: number;
+  decision: "apply" | "apply_with_gaps" | "improve_cv";
+  gaps_json: Array<{
+    skill: string;
+    requirement_type: string;
+    required_level: number;
+    user_level: number;
+    evidence: string | null;
+    suggestion: string;
+  }>;
+  explanation_json: Array<{
+    skill: string;
+    requirement_type: string;
+    required_level: number;
+    user_level: number;
+    status: string;
+    evidence: string | null;
+    suggestion: string | null;
+  }>;
+  overridden: boolean;
+  override_reason: string | null;
+  created_at: string;
+};
+
+export type Application = {
+  id: string;
+  profile_id: string;
+  offer_id: string;
+  status: "saved" | "applied" | "interview" | "rejected" | "offer";
+  applied_at: string | null;
+  next_action_at: string | null;
+  next_action_note: string | null;
+  notes: string | null;
+  cv_document_id: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ApplicationWithOffer = {
+  application: Application;
+  offer: Offer;
+  match: Match | null;
+};
+
+export type Reminder = {
+  id: string;
+  application_id: string;
+  due_at: string;
+  channel: string;
+  message: string | null;
+  status: string;
+};
+
+export type ApplicationEvent = {
+  id: string;
+  application_id: string;
+  event_type: string;
+  event_at: string;
+  notes: string | null;
+};
+
+
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_URL}${path}`, init);
@@ -251,4 +319,94 @@ export async function listOffers(sourceType?: string): Promise<Offer[]> {
 export async function getSourceStatus(): Promise<SourceStatus> {
   return request<SourceStatus>("/api/v1/offers/sources/status");
 }
+
+export async function getOffer(offerId: string): Promise<Offer> {
+  return request<Offer>(`/api/v1/offers/${offerId}`);
+}
+
+export async function createMatch(profileId: string, offerId: string): Promise<Match> {
+  return request<Match>("/api/v1/matches", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ profile_id: profileId, offer_id: offerId }),
+  });
+}
+
+export async function overrideMatch(
+  matchId: string,
+  decision: Match["decision"],
+  reason: string | null,
+): Promise<Match> {
+  return request<Match>(`/api/v1/matches/${matchId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ decision, reason }),
+  });
+}
+
+export async function createApplication(payload: {
+  profile_id: string;
+  offer_id: string;
+  status?: Application["status"];
+  next_action_at?: string | null;
+  next_action_note?: string | null;
+  notes?: string | null;
+}): Promise<{ application: Application; duplicate: boolean }> {
+  return request<{ application: Application; duplicate: boolean }>("/api/v1/applications", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function listApplications(profileId: string): Promise<ApplicationWithOffer[]> {
+  return request<ApplicationWithOffer[]>(
+    `/api/v1/applications?profile_id=${encodeURIComponent(profileId)}`,
+  );
+}
+
+export async function updateApplication(
+  applicationId: string,
+  payload: Partial<Pick<Application, "status" | "next_action_at" | "next_action_note" | "notes">>,
+): Promise<Application> {
+  return request<Application>(`/api/v1/applications/${applicationId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function addReminder(
+  applicationId: string,
+  payload: { due_at: string; channel?: string; message?: string | null },
+): Promise<Reminder> {
+  return request<Reminder>(`/api/v1/applications/${applicationId}/reminders`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function listReminders(applicationId: string): Promise<Reminder[]> {
+  return request<Reminder[]>(`/api/v1/applications/${applicationId}/reminders`);
+}
+
+export async function addApplicationEvent(
+  applicationId: string,
+  payload: { event_type: string; event_at: string; notes?: string | null },
+): Promise<ApplicationEvent> {
+  return request<ApplicationEvent>(`/api/v1/applications/${applicationId}/events`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
+
+export function exportUrl(
+  kind: "applications.xlsx" | "applications.csv" | "calendar.ics",
+  profileId: string,
+): string {
+  return `${API_URL}/api/v1/exports/${kind}?profile_id=${encodeURIComponent(profileId)}`;
+}
+
 

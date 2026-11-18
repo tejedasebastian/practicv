@@ -16,7 +16,8 @@ import {
   type OfferImportResult,
   type SourceStatus,
 } from "@/lib/api";
-import { dictionaries, type Locale } from "@/lib/i18n";
+import { dictionaries } from "@/lib/i18n";
+import { useLocale } from "@/lib/useLocale";
 
 type Tab = "manual" | "csv" | "url" | "mcp";
 
@@ -45,7 +46,7 @@ const emptyManual: ManualForm = {
 };
 
 export default function OffersPage() {
-  const [locale, setLocale] = useState<Locale>("es");
+  const [locale, setLocale] = useLocale();
   const t = dictionaries[locale].offers;
   const nav = dictionaries[locale].nav;
   const [tab, setTab] = useState<Tab>("manual");
@@ -63,10 +64,6 @@ export default function OffersPage() {
   const [mcpResult, setMcpResult] = useState<MCPSearchResult | null>(null);
   const [selected, setSelected] = useState<Record<string, boolean>>({});
   const [sourceStatus, setSourceStatus] = useState<SourceStatus | null>(null);
-
-  useEffect(() => {
-    document.documentElement.lang = locale;
-  }, [locale]);
 
   const refreshOffers = useCallback(async () => {
     try {
@@ -213,6 +210,12 @@ export default function OffersPage() {
             className="text-sm font-medium text-slate-600 hover:text-emerald-700"
           >
             {nav.profile}
+          </Link>
+          <Link
+            href="/postulaciones"
+            className="text-sm font-medium text-slate-600 hover:text-emerald-700"
+          >
+            {nav.applications}
           </Link>
           <div className="flex items-center gap-1 rounded-full border border-slate-300 bg-white p-1 text-sm">
             <button
@@ -427,6 +430,12 @@ export default function OffersPage() {
                     <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
                       {t.source}: {offer.source_type}
                     </span>
+                    <Link
+                      href={`/ofertas/${offer.id}`}
+                      className="text-sm font-semibold text-emerald-700 hover:text-emerald-900"
+                    >
+                      Match →
+                    </Link>
                   </div>
                   {offer.salary_text && <p className="mt-2 text-sm text-slate-600">{offer.salary_text}</p>}
                 </article>

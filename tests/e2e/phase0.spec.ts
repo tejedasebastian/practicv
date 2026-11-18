@@ -13,4 +13,6 @@ test("PractiCV landing loads and toggles ES/EN", async ({ page }) => {
 
   await page.getByTestId("lang-es").click();
   await expect(page.getByTestId("hero-subtitle")).toContainText("Convierte cualquier oferta");
+
+  await page.screenshot({ path: "docs/assets/landing.png", fullPage: true });
 });

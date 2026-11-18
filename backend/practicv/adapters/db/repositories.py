@@ -8,10 +8,12 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from practicv.adapters.db.models import (
+    ApplicationEventModel,
     ApplicationModel,
     CVDocumentModel,
     MatchModel,
     OfferModel,
+    OfferSkillModel,
     ProfileModel,
     ProfileSkillModel,
     ReminderModel,
@@ -19,6 +21,7 @@ from practicv.adapters.db.models import (
 )
 from practicv.domain.entities import (
     Application,
+    ApplicationEvent,
     CVDocument,
     Match,
     Offer,
@@ -27,7 +30,14 @@ from practicv.domain.entities import (
     Skill,
     utcnow,
 )
-from practicv.domain.enums import ApplicationStatus, ReminderStatus, SkillSource, SourceType
+from practicv.domain.enums import (
+    ApplicationStatus,
+    MatchDecision,
+    ReminderStatus,
+    RequirementType,
+    SkillSource,
+    SourceType,
+)
 from practicv.domain.errors import ConflictError, NotFoundError
 
 
@@ -105,9 +115,12 @@ def _match(row: MatchModel) -> Match:
         offer_id=row.offer_id,
         overall_score=row.overall_score,
         must_have_score=row.must_have_score,
+        confidence=row.confidence,
         decision=row.decision,
         gaps_json=list(row.gaps_json or []),
         explanation_json=list(row.explanation_json or []),
+        overridden=row.overridden,
+        override_reason=row.override_reason,
         created_at=row.created_at,
     )
 
@@ -136,6 +149,16 @@ def _reminder(row: ReminderModel) -> Reminder:
         channel=row.channel,
         message=row.message,
         status=row.status,
+    )
+
+
+def _event(row: ApplicationEventModel) -> ApplicationEvent:
+    return ApplicationEvent(
+        id=row.id,
+        application_id=row.application_id,
+        event_type=row.event_type,
+        event_at=row.event_at,
+        notes=row.notes,
     )
 
 
@@ -323,6 +346,51 @@ class ProfileSkillRepository:
         ]
 
 
+class OfferSkillRepository:
+    def __init__(self, session: Session) -> None:
+        self.session = session
+
+    def replace_for_offer(
+        self,
+        offer_id: UUID,
+        items: list[tuple[UUID, RequirementType, int, str | None, float | None]],
+    ) -> list[dict]:
+        self.session.execute(delete(OfferSkillModel).where(OfferSkillModel.offer_id == offer_id))
+        for skill_id, requirement_type, required_level, evidence, confidence in items:
+            self.session.add(
+                OfferSkillModel(
+                    offer_id=offer_id,
+                    skill_id=skill_id,
+                    requirement_type=requirement_type,
+                    required_level=required_level,
+                    evidence_text=evidence,
+                    confidence=confidence,
+                )
+            )
+        self.session.flush()
+        return self.list_for_offer(offer_id)
+
+    def list_for_offer(self, offer_id: UUID) -> list[dict]:
+        rows = self.session.execute(
+            select(OfferSkillModel, SkillModel)
+            .join(SkillModel, SkillModel.id == OfferSkillModel.skill_id)
+            .where(OfferSkillModel.offer_id == offer_id)
+            .order_by(SkillModel.canonical_name)
+        ).all()
+        return [
+            {
+                "skill_id": offer_skill.skill_id,
+                "canonical_name": skill.canonical_name,
+                "category": skill.category,
+                "requirement_type": offer_skill.requirement_type,
+                "required_level": offer_skill.required_level,
+                "evidence_text": offer_skill.evidence_text,
+                "confidence": offer_skill.confidence,
+            }
+            for offer_skill, skill in rows
+        ]
+
+
 class OfferRepository:
     def __init__(self, session: Session) -> None:
         self.session = session
@@ -388,13 +456,29 @@ class MatchRepository:
             offer_id=match.offer_id,
             overall_score=match.overall_score,
             must_have_score=match.must_have_score,
+            confidence=match.confidence,
             decision=match.decision,
             gaps_json=match.gaps_json,
             explanation_json=match.explanation_json,
+            overridden=match.overridden,
+            override_reason=match.override_reason,
         )
         self.session.add(row)
         self.session.flush()
         return _match(row)
+
+    def get(self, match_id: UUID) -> Match | None:
+        row = self.session.get(MatchModel, match_id)
+        return _match(row) if row else None
+
+    def list_by_profile(self, profile_id: UUID, limit: int = 50) -> list[Match]:
+        rows = self.session.scalars(
+            select(MatchModel)
+            .where(MatchModel.profile_id == profile_id)
+            .order_by(MatchModel.created_at.desc())
+            .limit(limit)
+        ).all()
+        return [_match(row) for row in rows]
 
     def get_latest(self, profile_id: UUID, offer_id: UUID) -> Match | None:
         row = self.session.scalar(
@@ -407,6 +491,21 @@ class MatchRepository:
             .limit(1)
         )
         return _match(row) if row else None
+
+    def update_decision(
+        self,
+        match_id: UUID,
+        decision: MatchDecision,
+        reason: str | None,
+    ) -> Match:
+        row = self.session.get(MatchModel, match_id)
+        if row is None:
+            raise NotFoundError("Match not found", {"match_id": str(match_id)})
+        row.decision = decision
+        row.overridden = True
+        row.override_reason = reason
+        self.session.flush()
+        return _match(row)
 
 
 class ApplicationRepository:
@@ -435,6 +534,19 @@ class ApplicationRepository:
             ) from exc
         return _application(row)
 
+    def get_by_profile_offer(
+        self,
+        profile_id: UUID,
+        offer_id: UUID,
+    ) -> Application | None:
+        row = self.session.scalar(
+            select(ApplicationModel).where(
+                ApplicationModel.profile_id == profile_id,
+                ApplicationModel.offer_id == offer_id,
+            )
+        )
+        return _application(row) if row else None
+
     def get(self, application_id: UUID) -> Application | None:
         row = self.session.get(ApplicationModel, application_id)
         return _application(row) if row else None
@@ -446,6 +558,76 @@ class ApplicationRepository:
             .order_by(ApplicationModel.updated_at.desc())
         ).all()
         return [_application(row) for row in rows]
+
+    def update(
+        self,
+        application_id: UUID,
+        status: ApplicationStatus | None = None,
+        next_action_at: datetime | None = None,
+        next_action_note: str | None = None,
+        notes: str | None = None,
+    ) -> Application:
+        row = self.session.get(ApplicationModel, application_id)
+        if row is None:
+            raise NotFoundError("Application not found", {"application_id": str(application_id)})
+        if status is not None:
+            row.status = status
+            if (
+                status
+                in (
+                    ApplicationStatus.APPLIED,
+                    ApplicationStatus.INTERVIEW,
+                    ApplicationStatus.OFFER,
+                )
+                and row.applied_at is None
+            ):
+                row.applied_at = utcnow()
+        if next_action_at is not None:
+            row.next_action_at = next_action_at
+        if next_action_note is not None:
+            row.next_action_note = next_action_note
+        if notes is not None:
+            row.notes = notes
+        row.updated_at = utcnow()
+        self.session.flush()
+        return _application(row)
+
+    def add_event(
+        self,
+        application_id: UUID,
+        event_type: str,
+        event_at: datetime,
+        notes: str | None = None,
+    ) -> ApplicationEvent:
+        row = ApplicationEventModel(
+            application_id=application_id,
+            event_type=event_type,
+            event_at=event_at,
+            notes=notes,
+        )
+        self.session.add(row)
+        self.session.flush()
+        return _event(row)
+
+    def list_events(self, application_id: UUID) -> list[ApplicationEvent]:
+        rows = self.session.scalars(
+            select(ApplicationEventModel)
+            .where(ApplicationEventModel.application_id == application_id)
+            .order_by(ApplicationEventModel.event_at.desc())
+        ).all()
+        return [_event(row) for row in rows]
+
+    def list_events_by_profile(self, profile_id: UUID) -> list[ApplicationEvent]:
+        rows = self.session.scalars(
+            select(ApplicationEventModel)
+            .join(
+                ApplicationModel,
+                ApplicationModel.id == ApplicationEventModel.application_id,
+            )
+            .where(ApplicationModel.profile_id == profile_id)
+            .order_by(ApplicationEventModel.event_at.desc())
+        ).all()
+        return [_event(row) for row in rows]
 
     def update_status(
         self,
@@ -459,7 +641,15 @@ class ApplicationRepository:
             raise NotFoundError("Application not found", {"application_id": str(application_id)})
         row.status = status
         row.updated_at = utcnow()
-        if status == ApplicationStatus.APPLIED and row.applied_at is None:
+        if (
+            status
+            in (
+                ApplicationStatus.APPLIED,
+                ApplicationStatus.INTERVIEW,
+                ApplicationStatus.OFFER,
+            )
+            and row.applied_at is None
+        ):
             row.applied_at = utcnow()
         if next_action_at is not None:
             row.next_action_at = next_action_at
@@ -493,6 +683,34 @@ class ReminderRepository:
             .limit(limit)
         ).all()
         return [_reminder(row) for row in rows]
+
+    def list_by_application(self, application_id: UUID) -> list[Reminder]:
+        rows = self.session.scalars(
+            select(ReminderModel)
+            .where(ReminderModel.application_id == application_id)
+            .order_by(ReminderModel.due_at.asc())
+        ).all()
+        return [_reminder(row) for row in rows]
+
+    def list_by_profile(self, profile_id: UUID) -> list[Reminder]:
+        rows = self.session.scalars(
+            select(ReminderModel)
+            .join(
+                ApplicationModel,
+                ApplicationModel.id == ReminderModel.application_id,
+            )
+            .where(ApplicationModel.profile_id == profile_id)
+            .order_by(ReminderModel.due_at.asc())
+        ).all()
+        return [_reminder(row) for row in rows]
+
+    def mark_done(self, reminder_id: UUID) -> Reminder:
+        row = self.session.get(ReminderModel, reminder_id)
+        if row is None:
+            raise NotFoundError("Reminder not found", {"reminder_id": str(reminder_id)})
+        row.status = ReminderStatus.DONE
+        self.session.flush()
+        return _reminder(row)
 
 
 class AnalyticsRepository:

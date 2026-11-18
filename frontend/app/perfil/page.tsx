@@ -14,7 +14,8 @@ import {
   type CVResult,
   type CVSkill,
 } from "@/lib/api";
-import { dictionaries, type Locale } from "@/lib/i18n";
+import { dictionaries } from "@/lib/i18n";
+import { useLocale } from "@/lib/useLocale";
 
 type FormState = {
   full_name: string;
@@ -35,7 +36,7 @@ const emptyForm: FormState = {
 };
 
 export default function ProfilePage() {
-  const [locale, setLocale] = useState<Locale>("es");
+  const [locale, setLocale] = useLocale();
   const t = dictionaries[locale].profile;
   const [profileId, setProfileId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm);
@@ -47,10 +48,6 @@ export default function ProfilePage() {
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
-
-  useEffect(() => {
-    document.documentElement.lang = locale;
-  }, [locale]);
 
   useEffect(() => {
     const saved = window.localStorage.getItem("practicv.profileId");
@@ -193,6 +190,12 @@ export default function ProfilePage() {
             className="text-sm font-medium text-slate-600 hover:text-emerald-700"
           >
             {dictionaries[locale].nav.offers}
+          </Link>
+          <Link
+            href="/postulaciones"
+            className="text-sm font-medium text-slate-600 hover:text-emerald-700"
+          >
+            {dictionaries[locale].nav.applications}
           </Link>
           <div className="flex items-center gap-1 rounded-full border border-slate-300 bg-white p-1 text-sm">
             <button

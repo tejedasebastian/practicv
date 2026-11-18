@@ -126,4 +126,6 @@ test("profile, CV, skills and AI consent flow", async ({ page }) => {
   await page.getByTestId("ai-analyze").click();
   await expect(page.getByTestId("ai-result")).toContainText("[EMAIL]");
   await expect(page.getByText("Agrega logros medibles.")).toBeVisible();
+
+  await page.screenshot({ path: "docs/assets/profile-cv.png", fullPage: true });
 });
