@@ -1,0 +1,25 @@
+empresa,puesto,estado,estado_etiqueta,funnel_etapa,orden_embudo,match,must_have,decision,postulada,proxima_accion,nota
+Banco Demo,Practicante de Datos,saved,Guardada,1. Guardada,1,55,47,Preparar CV,2026-11-01,2026-12-01,Dato sintetico de demo.
+Retail Demo,Practicante de BI,saved,Guardada,1. Guardada,1,62,54,Preparar CV,2026-11-02,2026-12-02,Dato sintetico de demo.
+Seguros Demo,Practicante de Riesgos,saved,Guardada,1. Guardada,1,69,61,Preparar CV,2026-11-03,2026-12-03,Dato sintetico de demo.
+Minera Demo,Practicante de Operaciones,saved,Guardada,1. Guardada,1,76,68,Aplicar,2026-11-04,2026-12-04,Dato sintetico de demo.
+Consultora Demo,Practicante de Analitica,saved,Guardada,1. Guardada,1,83,75,Aplicar,2026-11-05,2026-12-05,Dato sintetico de demo.
+Fintech Demo,Practicante de Producto,saved,Guardada,1. Guardada,1,90,82,Aplicar,2026-11-06,2026-12-06,Dato sintetico de demo.
+Banco Demo,Practicante de Datos,saved,Guardada,1. Guardada,1,57,49,Preparar CV,2026-11-07,2026-12-07,Dato sintetico de demo.
+Retail Demo,Practicante de BI,saved,Guardada,1. Guardada,1,64,56,Preparar CV,2026-11-08,2026-12-08,Dato sintetico de demo.
+Seguros Demo,Practicante de Riesgos,applied,Postulada,2. Postulada,2,71,63,Aplicar,2026-11-09,2026-12-09,Dato sintetico de demo.
+Minera Demo,Practicante de Operaciones,applied,Postulada,2. Postulada,2,78,70,Aplicar,2026-11-10,2026-12-10,Dato sintetico de demo.
+Consultora Demo,Practicante de Analitica,applied,Postulada,2. Postulada,2,85,77,Aplicar,2026-11-11,2026-12-11,Dato sintetico de demo.
+Fintech Demo,Practicante de Producto,applied,Postulada,2. Postulada,2,92,84,Aplicar,2026-11-12,2026-12-12,Dato sintetico de demo.
+Banco Demo,Practicante de Datos,applied,Postulada,2. Postulada,2,59,51,Preparar CV,2026-11-13,2026-12-13,Dato sintetico de demo.
+Retail Demo,Practicante de BI,applied,Postulada,2. Postulada,2,66,58,Preparar CV,2026-11-14,2026-12-14,Dato sintetico de demo.
+Seguros Demo,Practicante de Riesgos,interview,Entrevista,3. Entrevista,3,73,65,Aplicar,2026-11-15,2026-12-15,Dato sintetico de demo.
+Minera Demo,Practicante de Operaciones,interview,Entrevista,3. Entrevista,3,80,72,Aplicar,2026-11-16,2026-12-16,Dato sintetico de demo.
+Consultora Demo,Practicante de Analitica,interview,Entrevista,3. Entrevista,3,87,79,Aplicar,2026-11-17,2026-12-17,Dato sintetico de demo.
+Fintech Demo,Practicante de Producto,interview,Entrevista,3. Entrevista,3,94,86,Aplicar,2026-11-18,2026-12-18,Dato sintetico de demo.
+Banco Demo,Practicante de Datos,offer,Oferta,4. Oferta,4,61,53,Preparar CV,2026-11-19,2026-12-19,Dato sintetico de demo.
+Retail Demo,Practicante de BI,offer,Oferta,4. Oferta,4,68,60,Preparar CV,2026-11-20,2026-12-20,Dato sintetico de demo.
+Seguros Demo,Practicante de Riesgos,offer,Oferta,4. Oferta,4,75,67,Aplicar,2026-11-21,2026-12-21,Dato sintetico de demo.
+Minera Demo,Practicante de Operaciones,rejected,Rechazada,5. Rechazada,5,82,74,Aplicar,2026-11-22,2026-12-22,Dato sintetico de demo.
+Consultora Demo,Practicante de Analitica,rejected,Rechazada,5. Rechazada,5,89,81,Aplicar,2026-11-23,2026-12-23,Dato sintetico de demo.
+Fintech Demo,Practicante de Producto,rejected,Rechazada,5. Rechazada,5,56,48,Preparar CV,2026-11-24,2026-12-24,Dato sintetico de demo.
