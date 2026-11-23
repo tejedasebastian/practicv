@@ -391,13 +391,18 @@ El proyecto está terminado cuando:
 
 ---
 
-## Backlog v0.2 (no ahora)
+## Fase 8 — v0.2 (features completas; OAuth pendiente)
 
-- Bookmarklet.
-- Correos de alerta (Gmail/Outlook).
-- Adaptador Practilizate.
-- Flujo Power Automate.
-- Dashboard Power BI de embudo.
-- Múltiples versiones de CV.
-- Traducción de docs internas al inglés.
-- Deploy público de la demo.
+- [x] Flujo manual de Power Automate para enviar el ICS/CSV exportado (UNMSM, sin Premium). Evidencia en `docs/power-automate.md`.
+- [x] Bookmarklet para capturar la oferta visible desde el navegador. Ver `docs/bookmarklet.md`.
+- [x] Importación de alertas de correo desde `.eml` (Gmail/Outlook), con preview y deduplicación. Ver `docs/email-alerts.md`.
+- [ ] OAuth Gmail/Outlook en vivo: requiere registrar una app y credenciales; no validado en v0.2.
+- [x] Adaptador Practilizate (CSV opcional, desactivado por defecto). Ver `docs/practilizate.md`.
+- [x] Dashboard Power BI de embudo (PBIP validado 0/0 y captura). Ver `docs/powerbi.md`.
+- [ ] Múltiples versiones de CV (v0.3).
+- [ ] Traducción de docs internas al inglés (v0.3).
+- [ ] Deploy público de la demo (v0.3).
+
+**E2E de v0.2:** backend **25/25**, Playwright **9/9**, Power BI **0 errores / 0 warnings**. El flujo PA se ejecutó con `calendar.ics` el 2026-11-23 12:19 (985 ms, `Succeeded`). Capturas: `docs/assets/power-automate-run.png` y `docs/assets/practicv-dashboard.png`.
+
+**Plan:** [`docs/v0.2-plan.md`](docs/v0.2-plan.md).

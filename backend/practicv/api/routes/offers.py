@@ -8,8 +8,15 @@ from sqlalchemy.orm import Session
 
 from practicv.adapters.db.repositories import OfferRepository
 from practicv.adapters.db.session import get_session
+from practicv.adapters.sources.email_alerts import parse_email
 from practicv.adapters.sources.practicas_pe_mcp import MCPClient, get_mcp_client
+from practicv.adapters.sources.practilizate import parse_practilizate_csv
 from practicv.api.schemas import (
+    BookmarkletPreviewRequest,
+    BookmarkletPreviewResponse,
+    EmailCandidateResponse,
+    EmailImportRequest,
+    EmailPreviewResponse,
     MCPImportRequest,
     MCPSearchRequest,
     MCPSearchResponse,
@@ -17,12 +24,15 @@ from practicv.api.schemas import (
     OfferImportResponse,
     OfferMutationResponse,
     OfferResponse,
+    PractilizateStatusResponse,
     SourceStatusResponse,
     UrlCaptureRequest,
 )
 from practicv.config import get_settings
 from practicv.domain.enums import SourceType
 from practicv.domain.errors import MCPUnavailableError, NotFoundError, ValidationError
+from practicv.services.bookmarklet import extract_bookmarklet
+from practicv.services.email_alerts import import_email_urls
 from practicv.services.offers import (
     ImportResult,
     capture_url,
@@ -49,6 +59,28 @@ def create_manual_offer(
     )
 
 
+@router.post("/bookmarklet/preview", response_model=BookmarkletPreviewResponse)
+def preview_bookmarklet(
+    payload: BookmarkletPreviewRequest,
+) -> BookmarkletPreviewResponse:
+    return BookmarkletPreviewResponse(**extract_bookmarklet(payload.model_dump()))
+
+
+@router.post("/bookmarklet", response_model=OfferMutationResponse)
+def create_bookmarklet_offer(
+    payload: OfferCreate,
+    response: Response,
+    session: Session = Depends(get_session),
+) -> OfferMutationResponse:
+    offer, duplicate = save_offer(session, payload.model_dump(), SourceType.BOOKMARKLET)
+    session.commit()
+    response.status_code = 200 if duplicate else 201
+    return OfferMutationResponse(
+        offer=OfferResponse.model_validate(offer),
+        duplicate=duplicate,
+    )
+
+
 @router.post("/import/csv", response_model=OfferImportResponse)
 async def import_csv(
     file: UploadFile = File(...),
@@ -59,6 +91,68 @@ async def import_csv(
         raise ValidationError("The import file is empty.")
     rows = parse_import_file(content, file.filename or "import.csv")
     result = import_rows(session, rows, SourceType.CSV)
+    session.commit()
+    return OfferImportResponse(**asdict(result))
+
+
+@router.post("/import/email/preview", response_model=EmailPreviewResponse)
+async def preview_email(
+    file: UploadFile = File(...),
+) -> EmailPreviewResponse:
+    content = await file.read()
+    preview = parse_email(content)
+    return EmailPreviewResponse(
+        subject=preview.subject,
+        candidates=[
+            EmailCandidateResponse(url=item.url, title=item.title, source=item.source)
+            for item in preview.candidates
+        ],
+        warnings=preview.warnings,
+    )
+
+
+@router.post("/import/email", response_model=OfferImportResponse)
+def import_email(
+    payload: EmailImportRequest,
+    session: Session = Depends(get_session),
+) -> OfferImportResponse:
+    settings = get_settings()
+    result = import_email_urls(
+        session,
+        payload.urls,
+        settings.url_capture_user_agent,
+    )
+    session.commit()
+    return OfferImportResponse(**asdict(result))
+
+
+@router.get("/sources/practilizate/status", response_model=PractilizateStatusResponse)
+def practilizate_status() -> PractilizateStatusResponse:
+    enabled = get_settings().practilizate_enabled
+    return PractilizateStatusResponse(
+        enabled=enabled,
+        detail=(
+            "Practilizate adapter is enabled."
+            if enabled
+            else "Practilizate adapter is disabled. Set PRACTICV_PRACTILIZATE_ENABLED=true."
+        ),
+    )
+
+
+@router.post("/import/practilizate", response_model=OfferImportResponse)
+async def import_practilizate(
+    file: UploadFile = File(...),
+    session: Session = Depends(get_session),
+) -> OfferImportResponse:
+    settings = get_settings()
+    if not settings.practilizate_enabled:
+        raise ValidationError(
+            "Practilizate adapter is disabled.",
+            {"hint": "Set PRACTICV_PRACTILIZATE_ENABLED=true to enable it."},
+        )
+    content = await file.read()
+    rows = parse_practilizate_csv(content)
+    result = import_rows(session, rows, SourceType.PRACTILIZATE)
     session.commit()
     return OfferImportResponse(**asdict(result))
 

@@ -8,13 +8,14 @@ class Settings(BaseSettings):
 
     app_name: str = "PractiCV"
     environment: str = "local"
-    version: str = "0.1.0"
+    version: str = "0.2.0"
     database_url: str = "postgresql+psycopg://practicv:practicv@localhost:5434/practicv"
     frontend_origin: str = "http://localhost:3000"
     mcp_enabled: bool = True
     mcp_server_path: str | None = None
     mcp_fixture_dir: str | None = None
     url_capture_user_agent: str = "PractiCV/0.1.0 (+https://github.com/kuki236/practicv)"
+    practilizate_enabled: bool = False
 
     model_config = SettingsConfigDict(
         env_prefix="PRACTICV_",

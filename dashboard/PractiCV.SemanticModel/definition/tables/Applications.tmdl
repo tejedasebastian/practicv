@@ -1,0 +1,86 @@
+table Applications
+	column empresa
+		dataType: string
+		summarizeBy: none
+		sourceColumn: empresa
+
+	column puesto
+		dataType: string
+		summarizeBy: none
+		sourceColumn: puesto
+
+	column estado
+		dataType: string
+		summarizeBy: none
+		sourceColumn: estado
+
+	column estado_etiqueta
+		dataType: string
+		summarizeBy: none
+		sourceColumn: estado_etiqueta
+		sortByColumn: orden_embudo
+
+	column funnel_etapa
+		dataType: string
+		summarizeBy: none
+		sourceColumn: funnel_etapa
+
+	column orden_embudo
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: orden_embudo
+
+	column match
+		dataType: double
+		summarizeBy: none
+		sourceColumn: match
+
+	column must_have
+		dataType: double
+		summarizeBy: none
+		sourceColumn: must_have
+
+	column decision
+		dataType: string
+		summarizeBy: none
+		sourceColumn: decision
+
+	column postulada
+		dataType: string
+		summarizeBy: none
+		sourceColumn: postulada
+
+	column proxima_accion
+		dataType: string
+		summarizeBy: none
+		sourceColumn: proxima_accion
+
+	column nota
+		dataType: string
+		summarizeBy: none
+		sourceColumn: nota
+
+	measure Total = COUNTROWS('Applications')
+		formatString: 0
+
+	measure Postuladas = CALCULATE([Total], Applications[estado] = "applied")
+		formatString: 0
+
+	measure Entrevistas = CALCULATE([Total], Applications[estado] = "interview")
+		formatString: 0
+
+	measure Ofertas = CALCULATE([Total], Applications[estado] = "offer")
+		formatString: 0
+
+	measure 'Match promedio' = AVERAGE(Applications[match])
+		formatString: 0.0
+
+	partition Applications = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "\applications.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"empresa", type text}, {"puesto", type text}, {"estado", type text}, {"estado_etiqueta", type text}, {"funnel_etapa", type text}, {"orden_embudo", Int64.Type}, {"match", type number}, {"must_have", type number}, {"decision", type text}, {"postulada", type text}, {"proxima_accion", type text}, {"nota", type text}})
+				in
+				    Typed

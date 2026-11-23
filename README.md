@@ -4,7 +4,7 @@
 
 PractiCV convierte cualquier oferta de prácticas en una decisión: captura la oferta, la compara con tu CV, te explica qué te falta y organiza tu postulación en un Kanban con recordatorios.
 
-> **Estado:** **v0.1.0 MVP completo**. Perfil/CV, ofertas multi-fuente, matching explicable, Kanban, recordatorios y exportaciones. El dogfooding con ofertas reales queda como paso manual opcional.
+> **Estado:** **v0.2.0 — features completas**. Perfil/CV, ofertas multi-fuente, bookmarklet, importación de alertas `.eml`, Practilizate opcional, matching explicable, Kanban, recordatorios, exportaciones y dashboard Power BI. La sincronización OAuth de Gmail/Outlook queda pendiente de credenciales de una app registrada. El dogfooding con ofertas reales sigue como paso manual opcional.
 >
 > **English:** [README.en.md](README.en.md)
 
@@ -27,12 +27,13 @@ PractiCV responde:
 ## Qué hace
 
 1. **Perfil y CV:** crea tu perfil y sube tu CV en PDF o DOCX.
-2. **Captura:** agrega ofertas desde texto, CSV, URL o el MCP de practicas.pe.
+2. **Captura:** agrega ofertas desde texto, CSV, URL, el MCP de practicas.pe, el bookmarklet o un correo `.eml`.
 3. **Extracción:** detecta requisitos, habilidades y niveles.
 4. **Match explicable:** calcula coincidencia y muestra brechas con evidencia.
 5. **Kanban:** guarda, postula, agenda entrevista, registra rechazo u oferta.
 6. **Recordatorios:** fechas límite y próximas acciones, con exportación `.ics`.
 7. **Exportación:** Excel, CSV y calendario.
+8. **Dashboard Power BI:** embudo de postulaciones, match promedio y detalle por estado.
 
 No es un job board, no postula automáticamente y no promete empleo.
 
@@ -51,6 +52,8 @@ No es un job board, no postula automáticamente y no promete empleo.
 ![Match CV–oferta](docs/assets/match.png)
 
 ![Kanban de postulaciones](docs/assets/kanban.png)
+
+![Dashboard Power BI de postulaciones](docs/assets/practicv-dashboard.png)
 
 ---
 
@@ -72,11 +75,14 @@ No es un job board, no postula automáticamente y no promete empleo.
 - **Manual:** formulario con validación.
 - **CSV/Excel:** plantilla descargable, previsualización y errores por fila.
 - **URL:** JSON-LD `JobPosting` y OpenGraph; solo se guarda texto extraído, nunca HTML crudo.
+- **Bookmarklet:** captura la página visible, previsualiza y confirma antes de guardar.
+- **Correo `.eml`:** importa enlaces de una alerta de Gmail/Outlook; el usuario elige cuáles.
+- **Practilizate:** adaptador opcional para importar su CSV; desactivado por defecto.
 - **MCP `practicas-pe`:** búsqueda, detalle e importación; si no está disponible, la UI ofrece texto/CSV/URL.
 - **Normalización:** URL canónica, sueldo, fechas, modalidad y ubicación.
 - **Deduplicación:** `dedupe_hash` por URL canónica o título + empresa + fecha.
 - **Procedencia:** `source_type`, `source_url` y `captured_at` en cada oferta.
-- **Límites:** 5 MB por CV/archivo, 500 filas por importación.
+- **Límites:** 5 MB por CV/archivo, 2 MB por `.eml`, 500 filas por importación, 30 enlaces por correo.
 
 ---
 
@@ -215,7 +221,9 @@ Mueve la oferta a Guardada, Postulada, Entrevista, Rechazada u Oferta. Agrega no
 
 ### 6. Recordatorios y exportación
 
-Exporta `.ics` para tu calendario y Excel/CSV para tu registro.
+Exporta `.ics` para tu calendario y Excel/CSV para tu registro. El envío por
+correo se hace con el flujo manual `PractiCV Recordatorios`; ver
+[`docs/power-automate.md`](docs/power-automate.md).
 
 ---
 
@@ -339,20 +347,25 @@ artifacts/e2e/
 |---|---|
 | Ofertas en seed sintético | 1,005 |
 | Matches en seed sintético | 505 |
-| Tests E2E backend | 18 passed |
-| Tests E2E UI (Playwright) | 5 passed |
+| Tests E2E backend | 25 passed |
+| Tests E2E UI (Playwright) | 9 passed |
+| Dashboard Power BI | PBIP 0 errores / 0 warnings |
 | Tiempo E2E backend | ~10 s |
 | Checksums de artefactos | 5/5 OK |
-| Flujos críticos cubiertos | Perfil/CV, ofertas, match, postulaciones, exportaciones |
+| Flujos críticos cubiertos | Perfil/CV, ofertas, bookmarklet, correo, Practilizate, match, postulaciones, exportaciones, dashboard |
 | Dogfooding con ofertas reales | Pendiente (manual, opcional) |
 
 ---
 
 ## Limitaciones
 
-- v0.1 es local-first y de un solo usuario.
+- v0.2 es local-first y de un solo usuario.
 - El parseo de CV puede fallar en formatos complejos; el usuario corrige.
 - La captura por URL es best effort; algunos portales bloquean.
+- El bookmarklet necesita la app local abierta en el mismo origen.
+- La importación de correo usa `.eml`; OAuth Gmail/Outlook requiere credenciales de app.
+- El adaptador Practilizate está desactivado por defecto y se alimenta por CSV.
+- El dashboard Power BI usa datos sintéticos y refresh manual.
 - El MCP puede no estar disponible; hay fallback manual.
 - El match es una guía, no una garantía.
 - No incluye auto-postulación.
@@ -364,10 +377,10 @@ artifacts/e2e/
 ## Roadmap
 
 - **v0.1 (MVP completo):** perfil, CV, captura multi-fuente, match, Kanban, recordatorios y export.
-- v0.2: bookmarklet, correos de alerta, adaptador Practilizate, Power Automate, Power BI.
-- v0.3: múltiples versiones de CV y deploy público de la demo.
+- **v0.2 (features completas):** bookmarklet, alertas `.eml`, Practilizate opcional, Power Automate manual y dashboard Power BI. OAuth Gmail/Outlook queda pendiente de credenciales.
+- **v0.3:** múltiples versiones de CV y deploy público de la demo.
 
-Ver [ROADMAP.md](ROADMAP.md).
+Ver [`docs/v0.2-plan.md`](docs/v0.2-plan.md) y [ROADMAP.md](ROADMAP.md).
 
 ---
 

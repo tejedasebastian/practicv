@@ -1,177 +1,104 @@
-# PractiCV v0.1.0
+# PractiCV v0.2.0
 
-**Copiloto de postulaciones para estudiantes.** Primer MVP completo y local-first.
+**Captura desde el navegador, alertas de correo, Practilizate y dashboard.**
 
-PractiCV convierte una oferta de prácticas en una decisión: extrae requisitos, calcula un match explicable contra el CV, muestra las brechas concretas y organiza la postulación en un Kanban con recordatorios y exportaciones.
+v0.2 amplía el MVP local-first sin cambiar su alcance: sigue siendo una app de un
+solo usuario, sin auto-postulación y sin promesas de empleo.
 
 ---
 
 ## Qué incluye
 
-### Perfil y CV
+### Bookmarklet
 
-- CRUD de perfil académico y roles objetivo.
-- Subida de CV en **PDF y DOCX** con extracción de texto y tablas.
-- Detección de secciones: perfil, educación, experiencia, proyectos, habilidades, certificaciones e idiomas.
-- Catálogo `skills.yaml` con alias (`PowerBI` → `Power BI`).
-- Edición manual de habilidades y niveles 0–3.
-- El archivo original se guarda localmente en PostgreSQL (`bytea`).
-- Análisis con IA **opt-in**, con redacción de correo/teléfono antes de enviar.
+- Botón instalable desde `/bookmarklet`; arrastrar a la barra de marcadores.
+- Lee JSON-LD, título y texto visible de la oferta.
+- Abre `/captura` con los datos en el hash, previsualiza, permite editar y
+  confirma antes de guardar.
+- No guarda HTML crudo ni hace POST cross-origin.
+- `source_type=bookmarklet` y deduplicación estándar.
 
-### Ofertas multi-fuente
+### Alertas de correo `.eml`
 
-- Captura manual con validación.
-- Importación CSV/XLSX con plantilla, previsualización y errores por fila.
-- Captura por URL con JSON-LD `JobPosting` y OpenGraph.
-- MCP `practicas-pe` opcional (búsqueda, detalle e importación).
-- Normalización y deduplicación por URL canónica + `dedupe_hash`.
-- Procedencia en cada oferta: `source_type`, `source_url`, `captured_at`.
-- Si el MCP falla, la app sigue funcionando con texto, CSV y URL.
+- Importa un `.eml` exportado desde Gmail u Outlook.
+- Extrae enlaces del HTML y del texto plano; el usuario elige cuáles importar.
+- Captura cada enlace con JSON-LD/OpenGraph y deduplica.
+- No guarda el correo original ni tokens.
+- Límite: OAuth en vivo queda pendiente de credenciales de una app registrada.
 
-### Matching explicable
+### Adaptador Practilizate
 
-- Clasificación de requisitos must-have / nice-to-have / unknown.
-- Detección de niveles: básico = 1, intermedio = 2, avanzado = 3.
-- Fórmula determinista:
+- Importa el CSV de Practilizate con mapeo explícito de columnas.
+- Desactivado por defecto (`PRACTICV_PRACTILIZATE_ENABLED=false`).
+- Sin dependencia de código ni base de datos de Practilizate.
+- La app sigue funcionando si el adaptador está apagado.
 
-```text
-coverage = min(user_level, required_level) / required_level
-overall_score    = 100 * Σ(weight * coverage) / Σ(weight)
-must_have_score  = 100 * Σ(weight * coverage must) / Σ(weight must)
-```
+### Dashboard Power BI
 
-- Decisión `apply` / `apply_with_gaps` / `improve_cv`.
-- Explicación por habilidad con evidencia y sugerencia.
-- Confianza del análisis.
-- Override manual persistido con motivo.
+- PBIP en `dashboard/PractiCV.pbip`.
+- Página `Embudo`: tarjetas, funnel por etapa, slicer de estado y tabla.
+- Medidas: total, postuladas, entrevistas, ofertas y match promedio.
+- Datos sintéticos de demo (24 postulaciones), sin PII.
+- Validación: **0 errores / 0 warnings**.
+- Captura: `docs/assets/practicv-dashboard.png`.
 
-### Postulaciones y recordatorios
+### Recordatorios con Power Automate
 
-- Kanban de cinco estados: guardada, postulada, entrevista, rechazada y oferta.
-- Movimiento por drag-and-drop y por selector accesible con teclado.
-- Notas, próxima acción e historial de eventos.
-- Recordatorios por fecha.
-- Filtros por estado, vencimiento y match.
-
-### Exportaciones
-
-- **Excel** con hojas `Postulaciones`, `Ofertas`, `Matches`, `Brechas`, `Timeline` y `Habilidades`.
-- **CSV** del embudo de postulaciones.
-- **ICS** con fechas límite, próximas acciones y recordatorios.
-
-### UI
-
-- Español e inglés.
-- Idioma persistente en `localStorage`.
-- Páginas: `/`, `/perfil`, `/ofertas`, `/ofertas/[id]`, `/postulaciones`.
-
-### SQL avanzado (PostgreSQL 17)
-
-- Modelo relacional normalizado con `JSONB`, constraints e índices.
-- Vista `v_offer_ranking` con CTE + `ROW_NUMBER()`.
-- Función PL/pgSQL `fn_top_offers_for_profile(uuid)`.
-- Índice covering `ix_matches_profile_score_covering`.
-- `EXPLAIN ANALYZE` documentado en `docs/sql-performance.md`.
+- Flujo manual `PractiCV Recordatorios` en la cuenta UNMSM.
+- Archivo de entrada + `Send an email (V2)` con adjunto.
+- Ejecución real del 2026-11-23 12:19: **985 ms, Succeeded**.
+- No es programado: Microsoft retiró PA para cuentas personales y el OneDrive
+  UNMSM está bloqueado. Se documenta como flujo manual, no como automatización.
 
 ---
 
-## Arquitectura
+## Calidad
 
-- **Backend:** Python 3.13, FastAPI, SQLAlchemy 2, Pydantic v2, Alembic, psycopg 3.
-- **Base de datos:** PostgreSQL 17 local (Docker).
-- **Frontend:** Next.js 15, TypeScript estricto, Tailwind CSS.
-- **Testing:** pytest E2E + Playwright.
-- **CI:** GitHub Actions con servicio PostgreSQL 17.
-- **Patrón:** monolito modular con boundaries de microservicios.
+- Backend: **25/25 tests E2E**.
+- Playwright: **9/9 tests**.
+- Power BI: **0 errores / 0 warnings** y captura revisada.
+- Sin datos crudos, correos reales, CVs reales ni secretos en el repo.
 
 ---
 
-## Verificación
-
-| Verificación | Resultado |
-|---|---|
-| Backend E2E (`pytest tests/e2e -v`) | **18 passed** |
-| Ruff format + check | **All checks passed** |
-| Frontend lint + typecheck + build | **OK** |
-| Playwright E2E | **5 passed** |
-| Demo Playwright | **1 passed** |
-| CI | **success** |
-| Checksums de artefactos | **5/5 OK** |
-
-Rendimiento SQL medido:
-
-```text
-WindowAgg + Index Only Scan using ix_matches_profile_score_covering
-Execution Time: 0.517 ms
-```
-
----
-
-## Artefactos de release
-
-- `applications.xlsx` — exportación Excel con 6 hojas.
-- `applications.csv` — embudo de postulaciones.
-- `calendar.ics` — calendario con fechas y recordatorios.
-- `matches.json` — match completo con score, brechas y explicación.
-- `quality_report.json` — checks del flujo, métricas por paso y hashes de los artefactos.
-- `run_manifest.json` — manifiesto del run E2E.
-- `checksums.sha256` — hashes SHA-256 de los cinco artefactos de payload.
-
----
-
-## Cómo ejecutar
+## Cómo probarlo
 
 ```powershell
+# Base de datos
 docker compose up -d db
 
+# Backend
 cd backend
-python -m venv .venv
 .venv\Scripts\Activate.ps1
-pip install -e ".[dev]"
-$env:PRACTICV_DATABASE_URL="postgresql+psycopg://practicv:practicv@localhost:5434/practicv"
 alembic upgrade head
 python -m practicv seed --demo --volume 1000
 uvicorn practicv.main:app --reload
 
+# Frontend
 cd ..\frontend
 npm install
 npm run dev
 ```
 
-- Frontend: `http://localhost:3000`
-- Backend: `http://localhost:8000`
-- PostgreSQL: `localhost:5434`
+Abrir `http://localhost:3000`.
 
-Con Docker Compose completo: frontend `3001`, backend `8001`.
-
-### Modo demo
-
-```powershell
-python -m practicv seed --demo --volume 1000
-```
-
-Inserta 1,005 ofertas sintéticas, 505 matches, 3 postulaciones y 2 recordatorios. Sin PII real.
+- Bookmarklet: `/bookmarklet`.
+- Correo `.eml`: Ofertas → Correo.
+- Practilizate: definir `PRACTICV_PRACTILIZATE_ENABLED=true` y subir el CSV.
+- Power BI: abrir `dashboard/PractiCV.pbip` con el junction
+  `C:\Users\Public\practicv` (ver `docs/powerbi.md`).
 
 ---
 
-## Limitaciones conocidas
+## Límites conocidos
 
-- v0.1 es local-first y de un solo usuario.
-- El parseo de CV puede fallar en formatos muy complejos; el usuario corrige.
-- La captura por URL es best effort; algunos portales bloquean o no exponen JSON-LD.
-- El MCP `practicas-pe` es opcional y puede no estar disponible.
-- El match es una estimación explicable, no una probabilidad de contratación.
-- No incluye auto-postulación, app móvil, multiusuario ni scraping masivo.
-- El análisis con IA usa un adaptador local (`stub`); no hay proveedor externo conectado.
-- El dogfooding con 3–5 ofertas reales queda como paso manual del usuario.
-- La demo en video es corta y sin narración (`docs/assets/demo.webm`).
+- OAuth Gmail/Outlook en vivo no está validado; se importa `.eml`.
+- El bookmarklet requiere la app local abierta en el mismo origen.
+- El dashboard usa datos sintéticos y refresh manual.
+- El adaptador Practilizate no sincroniza automáticamente.
+- El match es una heurística explicable, no asesoría legal ni garantía de empleo.
 
----
+## Atribución
 
-## Créditos
-
-- Fuente de ofertas: [practicas.pe](https://www.practicas.pe/). PractiCV no está afiliado.
-- Inspiración de producto: Practilizate, el observatorio de prácticas del Perú.
-- Licencia: MIT.
-
-**Repo:** https://github.com/kuki236/practicv
+Datos de prácticas: practicas.pe / MCP `practicas-pe`, según sus términos.
+Practilizate es una fuente opcional y no una dependencia.

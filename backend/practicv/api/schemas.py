@@ -176,6 +176,57 @@ class UrlCaptureRequest(BaseModel):
     url: str = Field(min_length=5)
 
 
+class BookmarkletPreviewRequest(BaseModel):
+    url: str = Field(min_length=5)
+    title: str | None = Field(default=None, max_length=300)
+    company: str | None = Field(default=None, max_length=200)
+    location: str | None = Field(default=None, max_length=200)
+    salary_text: str | None = Field(default=None, max_length=100)
+    deadline_at: datetime | None = None
+    published_at: datetime | None = None
+    og_site_name: str | None = Field(default=None, max_length=200)
+    jsonld: list[str] = Field(default_factory=list, max_length=20)
+    text: str = Field(default="", max_length=50_000)
+
+
+class BookmarkletPreviewResponse(BaseModel):
+    title: str
+    company: str
+    source_url: str
+    location: str | None
+    modality: str | None
+    salary_text: str | None
+    salary_amount: float | None
+    salary_currency: str | None
+    description: str | None
+    requirements_text: str | None
+    published_at: datetime | None
+    deadline_at: datetime | None
+    confidence: float
+    warnings: list[str]
+
+
+class EmailCandidateResponse(BaseModel):
+    url: str
+    title: str
+    source: str
+
+
+class EmailPreviewResponse(BaseModel):
+    subject: str
+    candidates: list[EmailCandidateResponse]
+    warnings: list[str]
+
+
+class EmailImportRequest(BaseModel):
+    urls: list[str] = Field(min_length=1, max_length=30)
+
+
+class PractilizateStatusResponse(BaseModel):
+    enabled: bool
+    detail: str
+
+
 class MCPSearchRequest(BaseModel):
     q: str = ""
     modality: str = "preprofesional"

@@ -24,6 +24,7 @@ MCP_FIXTURE_DIR = Path(__file__).resolve().parent / "mcp_fixtures"
 os.environ["PRACTICV_DATABASE_URL"] = TEST_DATABASE_URL
 os.environ["PRACTICV_ENVIRONMENT"] = "test"
 os.environ["PRACTICV_MCP_FIXTURE_DIR"] = str(MCP_FIXTURE_DIR)
+os.environ["PRACTICV_PRACTILIZATE_ENABLED"] = "true"
 
 BACKEND_DIR = Path(__file__).resolve().parents[2]
 
