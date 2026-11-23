@@ -6,20 +6,26 @@ import { useCallback, useEffect, useState } from "react";
 import {
   captureOfferUrl,
   createOffer,
+  getPractilizateStatus,
   getSourceStatus,
+  importEmailAlerts,
   importMCP,
   importOffersCsv,
+  importPractilizateCsv,
   listOffers,
+  previewEmailAlerts,
   searchMCP,
+  type EmailPreview,
   type MCPSearchResult,
   type Offer,
   type OfferImportResult,
+  type PractilizateStatus,
   type SourceStatus,
 } from "@/lib/api";
 import { dictionaries } from "@/lib/i18n";
 import { useLocale } from "@/lib/useLocale";
 
-type Tab = "manual" | "csv" | "url" | "mcp";
+type Tab = "manual" | "csv" | "url" | "mcp" | "email" | "practilizate";
 
 type ManualForm = {
   title: string;
@@ -49,6 +55,7 @@ export default function OffersPage() {
   const [locale, setLocale] = useLocale();
   const t = dictionaries[locale].offers;
   const nav = dictionaries[locale].nav;
+  const bookmarklet = dictionaries[locale].bookmarklet;
   const [tab, setTab] = useState<Tab>("manual");
   const [manual, setManual] = useState<ManualForm>(emptyManual);
   const [offers, setOffers] = useState<Offer[]>([]);
@@ -64,6 +71,11 @@ export default function OffersPage() {
   const [mcpResult, setMcpResult] = useState<MCPSearchResult | null>(null);
   const [selected, setSelected] = useState<Record<string, boolean>>({});
   const [sourceStatus, setSourceStatus] = useState<SourceStatus | null>(null);
+  const [emailFile, setEmailFile] = useState<File | null>(null);
+  const [emailPreview, setEmailPreview] = useState<EmailPreview | null>(null);
+  const [emailSelected, setEmailSelected] = useState<Record<string, boolean>>({});
+  const [practilizateStatus, setPractilizateStatus] = useState<PractilizateStatus | null>(null);
+  const [practilizateFile, setPractilizateFile] = useState<File | null>(null);
 
   const refreshOffers = useCallback(async () => {
     try {
@@ -78,6 +90,9 @@ export default function OffersPage() {
     getSourceStatus()
       .then(setSourceStatus)
       .catch(() => setSourceStatus({ mcp: "unavailable", detail: null, filters: null }));
+    getPractilizateStatus()
+      .then(setPractilizateStatus)
+      .catch(() => setPractilizateStatus({ enabled: false, detail: "" }));
   }, [refreshOffers]);
 
   function updateManual(field: keyof ManualForm, value: string) {
@@ -121,6 +136,61 @@ export default function OffersPage() {
     setStatus(null);
     try {
       const result = await importOffersCsv(file);
+      setImportResult(result);
+      setStatus(t.created);
+      await refreshOffers();
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : t.noOffers);
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  async function handleEmailPreview() {
+    if (!emailFile) return;
+    setBusy("email-preview");
+    setError(null);
+    setStatus(null);
+    try {
+      const result = await previewEmailAlerts(emailFile);
+      setEmailPreview(result);
+      setEmailSelected(
+        Object.fromEntries(result.candidates.map((candidate) => [candidate.url, true])),
+      );
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : t.emailNoCandidates);
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  async function handleEmailImport() {
+    const urls = Object.entries(emailSelected)
+      .filter(([, checked]) => checked)
+      .map(([url]) => url);
+    if (urls.length === 0) return;
+    setBusy("email-import");
+    setError(null);
+    setStatus(null);
+    try {
+      const result = await importEmailAlerts(urls);
+      setImportResult(result);
+      setStatus(t.created);
+      await refreshOffers();
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : t.noOffers);
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  async function handlePractilizate() {
+    if (!practilizateFile) return;
+    setBusy("practilizate");
+    setError(null);
+    setStatus(null);
+    try {
+      const result = await importPractilizateCsv(practilizateFile);
       setImportResult(result);
       setStatus(t.created);
       await refreshOffers();
@@ -279,12 +349,25 @@ export default function OffersPage() {
           <button type="button" data-testid="offers-tab-csv" onClick={() => setTab("csv")} className={tabClass("csv")}>
             {t.csv}
           </button>
+          <button type="button" data-testid="offers-tab-email" onClick={() => setTab("email")} className={tabClass("email")}>
+            {t.email}
+          </button>
+          <button type="button" data-testid="offers-tab-practilizate" onClick={() => setTab("practilizate")} className={tabClass("practilizate")}>
+            {t.practilizate}
+          </button>
           <button type="button" data-testid="offers-tab-url" onClick={() => setTab("url")} className={tabClass("url")}>
             {t.url}
           </button>
           <button type="button" data-testid="offers-tab-mcp" onClick={() => setTab("mcp")} className={tabClass("mcp")}>
             {t.mcp}
           </button>
+          <Link
+            href="/bookmarklet"
+            data-testid="bookmarklet-install-link"
+            className="ml-auto rounded-full border border-emerald-300 bg-white px-4 py-2 text-sm font-medium text-emerald-800 hover:bg-emerald-50"
+          >
+            {bookmarklet.install}
+          </Link>
         </div>
 
         {tab === "manual" && (
@@ -347,6 +430,142 @@ export default function OffersPage() {
               <input data-testid="offer-csv" type="file" accept=".csv,.xlsx" onChange={(event) => setFile(event.target.files?.[0] ?? null)} className="text-sm" />
               <button type="button" data-testid="offer-csv-import" onClick={handleCsv} disabled={!file || busy === "csv"} className="rounded-full bg-slate-900 px-5 py-2 text-sm font-semibold text-white disabled:opacity-50">
                 {busy === "csv" ? t.importing : t.import}
+              </button>
+            </div>
+            {importResult && <ImportSummary result={importResult} t={t} />}
+          </section>
+        )}
+
+        {tab === "email" && (
+          <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h2 className="text-xl font-semibold">{t.email}</h2>
+            <p className="mt-2 text-sm text-slate-600">{t.emailHelp}</p>
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <label className="text-sm font-medium text-slate-700">
+                {t.emailFile}
+                <input
+                  data-testid="offer-email"
+                  type="file"
+                  accept=".eml,message/rfc822"
+                  onChange={(event) => {
+                    setEmailFile(event.target.files?.[0] ?? null);
+                    setEmailPreview(null);
+                  }}
+                  className="ml-2 text-sm"
+                />
+              </label>
+              <button
+                type="button"
+                data-testid="email-preview"
+                onClick={handleEmailPreview}
+                disabled={!emailFile || busy === "email-preview"}
+                className="rounded-full bg-slate-900 px-5 py-2 text-sm font-semibold text-white disabled:opacity-50"
+              >
+                {busy === "email-preview" ? t.emailPreviewing : t.emailPreview}
+              </button>
+            </div>
+
+            {emailPreview && (
+              <div className="mt-6">
+                <p className="text-sm font-medium text-slate-700">
+                  {t.emailSubject}: {emailPreview.subject || "—"}
+                </p>
+                {emailPreview.warnings.length > 0 && (
+                  <ul className="mt-3 list-disc space-y-1 rounded-xl bg-amber-50 p-4 pl-8 text-sm text-amber-900">
+                    {emailPreview.warnings.map((warning) => (
+                      <li key={warning}>{warning}</li>
+                    ))}
+                  </ul>
+                )}
+                <div className="mt-4 flex items-center justify-between gap-3">
+                  <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+                    {t.emailCandidates} ({emailPreview.candidates.length})
+                  </h3>
+                  <button
+                    type="button"
+                    data-testid="email-import"
+                    onClick={handleEmailImport}
+                    disabled={busy === "email-import" || emailPreview.candidates.length === 0}
+                    className="rounded-full bg-emerald-700 px-5 py-2 text-sm font-semibold text-white disabled:opacity-50"
+                  >
+                    {t.emailImport}
+                  </button>
+                </div>
+                {emailPreview.candidates.length === 0 ? (
+                  <p className="mt-3 text-sm text-slate-500">{t.emailNoCandidates}</p>
+                ) : (
+                  <div className="mt-3 divide-y divide-slate-100">
+                    {emailPreview.candidates.map((candidate, index) => (
+                      <label
+                        key={candidate.url}
+                        data-testid={`email-candidate-${index}`}
+                        className="flex items-start gap-3 py-3 text-sm"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={emailSelected[candidate.url] ?? false}
+                          onChange={(event) =>
+                            setEmailSelected((current) => ({
+                              ...current,
+                              [candidate.url]: event.target.checked,
+                            }))
+                          }
+                          className="mt-1"
+                        />
+                        <span>
+                          <span className="font-medium">{candidate.title}</span>
+                          <span className="block break-all text-xs text-slate-500">
+                            {candidate.url}
+                          </span>
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+            {importResult && <ImportSummary result={importResult} t={t} />}
+          </section>
+        )}
+
+        {tab === "practilizate" && (
+          <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h2 className="text-xl font-semibold">{t.practilizate}</h2>
+            <p className="mt-2 text-sm text-slate-600">{t.practilizateHelp}</p>
+            <div
+              data-testid="practilizate-status"
+              className={`mt-4 rounded-xl border px-4 py-3 text-sm ${
+                practilizateStatus?.enabled
+                  ? "border-emerald-200 bg-emerald-50 text-emerald-800"
+                  : "border-amber-200 bg-amber-50 text-amber-800"
+              }`}
+            >
+              {practilizateStatus?.enabled ? t.practilizateEnabled : t.practilizateDisabled}
+            </div>
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <label className="text-sm font-medium text-slate-700">
+                {t.practilizateFile}
+                <input
+                  data-testid="practilizate-file"
+                  type="file"
+                  accept=".csv"
+                  disabled={!practilizateStatus?.enabled}
+                  onChange={(event) => setPractilizateFile(event.target.files?.[0] ?? null)}
+                  className="ml-2 text-sm"
+                />
+              </label>
+              <button
+                type="button"
+                data-testid="practilizate-import"
+                onClick={handlePractilizate}
+                disabled={
+                  !practilizateStatus?.enabled ||
+                  !practilizateFile ||
+                  busy === "practilizate"
+                }
+                className="rounded-full bg-emerald-700 px-5 py-2 text-sm font-semibold text-white disabled:opacity-50"
+              >
+                {t.practilizateImport}
               </button>
             </div>
             {importResult && <ImportSummary result={importResult} t={t} />}

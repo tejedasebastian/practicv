@@ -126,6 +126,53 @@ export type OfferPayload = {
   deadline_at?: string | null;
 };
 
+export type BookmarkletPayload = {
+  url: string;
+  title?: string;
+  company?: string;
+  location?: string;
+  salary_text?: string;
+  og_site_name?: string;
+  jsonld: string[];
+  text: string;
+};
+
+export type BookmarkletPreview = {
+  title: string;
+  company: string;
+  source_url: string;
+  location: string | null;
+  modality: string | null;
+  salary_text: string | null;
+  salary_amount: number | null;
+  salary_currency: string | null;
+  description: string | null;
+  requirements_text: string | null;
+  published_at: string | null;
+  deadline_at: string | null;
+  confidence: number;
+  warnings: string[];
+};
+
+export type EmailCandidate = {
+  url: string;
+  title: string;
+  source: string;
+};
+
+export type EmailPreview = {
+  subject: string;
+  candidates: EmailCandidate[];
+  warnings: string[];
+};
+
+export type PractilizateStatus = {
+  enabled: boolean;
+  detail: string;
+};
+
+
+
 export type Match = {
   id: string;
   profile_id: string;
@@ -281,11 +328,61 @@ export async function importOffersCsv(file: File): Promise<OfferImportResult> {
   });
 }
 
+export async function previewEmailAlerts(file: File): Promise<EmailPreview> {
+  const form = new FormData();
+  form.append("file", file);
+  return request<EmailPreview>("/api/v1/offers/import/email/preview", {
+    method: "POST",
+    body: form,
+  });
+}
+
+export async function importEmailAlerts(urls: string[]): Promise<OfferImportResult> {
+  return request<OfferImportResult>("/api/v1/offers/import/email", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ urls }),
+  });
+}
+
+export async function getPractilizateStatus(): Promise<PractilizateStatus> {
+  return request<PractilizateStatus>("/api/v1/offers/sources/practilizate/status");
+}
+
+export async function importPractilizateCsv(file: File): Promise<OfferImportResult> {
+  const form = new FormData();
+  form.append("file", file);
+  return request<OfferImportResult>("/api/v1/offers/import/practilizate", {
+    method: "POST",
+    body: form,
+  });
+}
+
 export async function captureOfferUrl(url: string): Promise<OfferMutation> {
   return request<OfferMutation>("/api/v1/offers/capture-url", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ url }),
+  });
+}
+
+export async function previewBookmarklet(
+  payload: BookmarkletPayload,
+): Promise<BookmarkletPreview> {
+  return request<BookmarkletPreview>("/api/v1/offers/bookmarklet/preview", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function createBookmarkletOffer(
+  payload: OfferPayload,
+): Promise<OfferMutation> {
+  return request<OfferMutation>("/api/v1/offers/bookmarklet", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
   });
 }
 

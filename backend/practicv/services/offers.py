@@ -320,10 +320,8 @@ def _robots_allowed(url: str, user_agent: str) -> bool:
     return parser.can_fetch(user_agent, url)
 
 
-def _jsonld_jobposting(html: str) -> dict:
-    soup = BeautifulSoup(html, "html.parser")
-    for script in soup.find_all("script", type="application/ld+json"):
-        raw = script.string or script.get_text()
+def jobposting_from_jsonld(raw_values: list[str]) -> dict:
+    for raw in raw_values:
         if not raw:
             continue
         try:
@@ -342,6 +340,15 @@ def _jsonld_jobposting(html: str) -> dict:
                     if isinstance(item, dict) and item.get("@type") == "JobPosting":
                         return item
     return {}
+
+
+def _jsonld_jobposting(html: str) -> dict:
+    soup = BeautifulSoup(html, "html.parser")
+    raw_values = [
+        script.string or script.get_text()
+        for script in soup.find_all("script", type="application/ld+json")
+    ]
+    return jobposting_from_jsonld(raw_values)
 
 
 def _opengraph(html: str) -> dict:
