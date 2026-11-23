@@ -227,6 +227,39 @@ class PractilizateStatusResponse(BaseModel):
     detail: str
 
 
+class GoogleStatusResponse(BaseModel):
+    configured: bool
+    connected: bool
+    email: str | None
+    detail: str
+
+
+class GoogleAuthorizeResponse(BaseModel):
+    auth_url: str
+
+
+class GmailMessageResponse(BaseModel):
+    id: str
+    subject: str
+    sender: str
+    date: str
+    snippet: str
+
+
+class GmailMessageListResponse(BaseModel):
+    messages: list[GmailMessageResponse]
+    warnings: list[str] = Field(default_factory=list)
+
+
+class GmailMessageRequest(BaseModel):
+    message_id: str = Field(min_length=1, max_length=200)
+
+
+class GmailImportRequest(BaseModel):
+    message_id: str = Field(min_length=1, max_length=200)
+    urls: list[str] = Field(min_length=1, max_length=30)
+
+
 class MCPSearchRequest(BaseModel):
     q: str = ""
     modality: str = "preprofesional"

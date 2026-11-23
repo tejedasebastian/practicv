@@ -36,6 +36,30 @@ def _clean(value: str | None, limit: int = 200) -> str:
     return " ".join(value.split())[:limit]
 
 
+def _canonical_offer_url(url: str) -> str:
+    parsed = urlparse(url)
+    host = parsed.netloc.lower()
+    path = parsed.path
+    if "linkedin.com" in host and "/jobs/view/" in path:
+        match = re.search(r"/jobs/view/(\d+)", path)
+        if match:
+            return f"https://www.linkedin.com/jobs/view/{match.group(1)}"
+    return url
+
+
+def _is_offer_url(url: str) -> bool:
+    parsed = urlparse(url)
+    host = parsed.netloc.lower()
+    path = parsed.path.lower()
+    if host in {"apps.microsoft.com", "itunes.apple.com", "play.google.com"}:
+        return False
+    if any(token in path for token in ("unsubscribe", "preferences", "privacy", "terms")):
+        return False
+    if "linkedin.com" in host:
+        return "/jobs/view/" in path
+    return True
+
+
 def _add_candidate(
     candidates: dict[str, EmailCandidate],
     url: str | None,
@@ -47,9 +71,13 @@ def _add_candidate(
     normalized = normalize_url(url.strip().rstrip(".,;)"))
     if not normalized or not normalized.startswith(("http://", "https://")):
         return
+    normalized = _canonical_offer_url(normalized)
+    if not _is_offer_url(normalized):
+        return
     if normalized in candidates:
-        if not candidates[normalized].title and title:
-            candidates[normalized].title = _clean(title)
+        existing = candidates[normalized]
+        if title and (not existing.title or existing.title.startswith("Oferta en ")):
+            existing.title = _clean(title)
         return
     host = urlparse(normalized).netloc
     candidates[normalized] = EmailCandidate(

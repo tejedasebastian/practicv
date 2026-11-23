@@ -171,6 +171,26 @@ export type PractilizateStatus = {
   detail: string;
 };
 
+export type GoogleStatus = {
+  configured: boolean;
+  connected: boolean;
+  email: string | null;
+  detail: string;
+};
+
+export type GmailMessage = {
+  id: string;
+  subject: string;
+  sender: string;
+  date: string;
+  snippet: string;
+};
+
+export type GmailMessageList = {
+  messages: GmailMessage[];
+  warnings: string[];
+};
+
 
 
 export type Match = {
@@ -355,6 +375,38 @@ export async function importPractilizateCsv(file: File): Promise<OfferImportResu
   return request<OfferImportResult>("/api/v1/offers/import/practilizate", {
     method: "POST",
     body: form,
+  });
+}
+
+export async function getGoogleStatus(): Promise<GoogleStatus> {
+  return request<GoogleStatus>("/api/v1/email/google/status");
+}
+
+export async function getGoogleAuthorizeUrl(): Promise<{ auth_url: string }> {
+  return request<{ auth_url: string }>("/api/v1/email/google/authorize");
+}
+
+export async function listGmailMessages(q: string, limit = 10): Promise<GmailMessageList> {
+  const params = new URLSearchParams({ q, limit: String(limit) });
+  return request<GmailMessageList>(`/api/v1/email/google/messages?${params.toString()}`);
+}
+
+export async function previewGmailMessage(messageId: string): Promise<EmailPreview> {
+  return request<EmailPreview>("/api/v1/email/google/preview", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message_id: messageId }),
+  });
+}
+
+export async function importGmailMessage(
+  messageId: string,
+  urls: string[],
+): Promise<OfferImportResult> {
+  return request<OfferImportResult>("/api/v1/email/google/import", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message_id: messageId, urls }),
   });
 }
 

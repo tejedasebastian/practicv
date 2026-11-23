@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from practicv.api.errors import domain_error_handler
 from practicv.api.routes.analytics import router as analytics_router
 from practicv.api.routes.applications import router as applications_router
+from practicv.api.routes.email import router as email_router
 from practicv.api.routes.exports import router as exports_router
 from practicv.api.routes.health import router as health_router
 from practicv.api.routes.matches import router as matches_router
@@ -40,6 +41,7 @@ app.include_router(matches_router, prefix="/api/v1")
 app.include_router(applications_router, prefix="/api/v1")
 app.include_router(exports_router, prefix="/api/v1")
 app.include_router(analytics_router, prefix="/api/v1")
+app.include_router(email_router, prefix="/api/v1")
 
 
 @app.get("/", tags=["meta"])

@@ -6,16 +6,23 @@ import { useCallback, useEffect, useState } from "react";
 import {
   captureOfferUrl,
   createOffer,
+  getGoogleAuthorizeUrl,
+  getGoogleStatus,
   getPractilizateStatus,
   getSourceStatus,
   importEmailAlerts,
+  importGmailMessage,
   importMCP,
   importOffersCsv,
   importPractilizateCsv,
+  listGmailMessages,
   listOffers,
   previewEmailAlerts,
+  previewGmailMessage,
   searchMCP,
   type EmailPreview,
+  type GmailMessage,
+  type GoogleStatus,
   type MCPSearchResult,
   type Offer,
   type OfferImportResult,
@@ -76,6 +83,12 @@ export default function OffersPage() {
   const [emailSelected, setEmailSelected] = useState<Record<string, boolean>>({});
   const [practilizateStatus, setPractilizateStatus] = useState<PractilizateStatus | null>(null);
   const [practilizateFile, setPractilizateFile] = useState<File | null>(null);
+  const [googleStatus, setGoogleStatus] = useState<GoogleStatus | null>(null);
+  const [gmailQuery, setGmailQuery] = useState("from:(alertas OR empleos OR practicas) newer_than:30d");
+  const [gmailMessages, setGmailMessages] = useState<GmailMessage[]>([]);
+  const [gmailMessageId, setGmailMessageId] = useState<string | null>(null);
+  const [emailSource, setEmailSource] = useState<"eml" | "gmail">("eml");
+  const [gmailBusy, setGmailBusy] = useState<string | null>(null);
 
   const refreshOffers = useCallback(async () => {
     try {
@@ -93,6 +106,11 @@ export default function OffersPage() {
     getPractilizateStatus()
       .then(setPractilizateStatus)
       .catch(() => setPractilizateStatus({ enabled: false, detail: "" }));
+    getGoogleStatus()
+      .then(setGoogleStatus)
+      .catch(() =>
+        setGoogleStatus({ configured: false, connected: false, email: null, detail: "" }),
+      );
   }, [refreshOffers]);
 
   function updateManual(field: keyof ManualForm, value: string) {
@@ -151,6 +169,8 @@ export default function OffersPage() {
     setBusy("email-preview");
     setError(null);
     setStatus(null);
+    setEmailSource("eml");
+    setGmailMessageId(null);
     try {
       const result = await previewEmailAlerts(emailFile);
       setEmailPreview(result);
@@ -173,7 +193,10 @@ export default function OffersPage() {
     setError(null);
     setStatus(null);
     try {
-      const result = await importEmailAlerts(urls);
+      const result =
+        emailSource === "gmail" && gmailMessageId
+          ? await importGmailMessage(gmailMessageId, urls)
+          : await importEmailAlerts(urls);
       setImportResult(result);
       setStatus(t.created);
       await refreshOffers();
@@ -181,6 +204,52 @@ export default function OffersPage() {
       setError(cause instanceof Error ? cause.message : t.noOffers);
     } finally {
       setBusy(null);
+    }
+  }
+
+  async function handleGoogleConnect() {
+    setError(null);
+    try {
+      const result = await getGoogleAuthorizeUrl();
+      window.location.href = result.auth_url;
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : t.gmailNotConfigured);
+    }
+  }
+
+  async function handleGmailSearch() {
+    setGmailBusy("search");
+    setError(null);
+    setStatus(null);
+    try {
+      const result = await listGmailMessages(gmailQuery, 10);
+      setGmailMessages(result.messages);
+      if (result.messages.length === 0) {
+        setStatus(t.gmailNoMessages);
+      }
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : t.gmailNoMessages);
+    } finally {
+      setGmailBusy(null);
+    }
+  }
+
+  async function handleGmailPreview(messageId: string) {
+    setGmailBusy(`preview-${messageId}`);
+    setError(null);
+    setStatus(null);
+    try {
+      const result = await previewGmailMessage(messageId);
+      setEmailPreview(result);
+      setEmailSelected(
+        Object.fromEntries(result.candidates.map((candidate) => [candidate.url, true])),
+      );
+      setEmailSource("gmail");
+      setGmailMessageId(messageId);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : t.emailNoCandidates);
+    } finally {
+      setGmailBusy(null);
     }
   }
 
@@ -440,7 +509,87 @@ export default function OffersPage() {
           <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
             <h2 className="text-xl font-semibold">{t.email}</h2>
             <p className="mt-2 text-sm text-slate-600">{t.emailHelp}</p>
-            <div className="mt-4 flex flex-wrap items-center gap-3">
+
+            <div data-testid="gmail-panel" className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <h3 className="text-sm font-semibold text-slate-800">{t.gmail}</h3>
+                  {googleStatus?.connected ? (
+                    <p className="text-xs text-emerald-700">
+                      {t.gmailConnected}
+                      {googleStatus.email ? ` · ${googleStatus.email}` : ""}
+                    </p>
+                  ) : (
+                    <p className="text-xs text-slate-600">
+                      {googleStatus?.configured ? t.gmailConnectHelp : t.gmailNotConfigured}
+                    </p>
+                  )}
+                </div>
+                {!googleStatus?.connected && (
+                  <button
+                    type="button"
+                    data-testid="gmail-connect"
+                    onClick={handleGoogleConnect}
+                    disabled={!googleStatus?.configured}
+                    className="rounded-full bg-slate-900 px-5 py-2 text-sm font-semibold text-white disabled:opacity-50"
+                  >
+                    {t.gmailConnect}
+                  </button>
+                )}
+              </div>
+
+              {googleStatus?.connected && (
+                <div className="mt-3">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <input
+                      data-testid="gmail-query"
+                      value={gmailQuery}
+                      onChange={(event) => setGmailQuery(event.target.value)}
+                      placeholder={t.gmailQuery}
+                      className="min-w-80 flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                    />
+                    <button
+                      type="button"
+                      data-testid="gmail-search"
+                      onClick={handleGmailSearch}
+                      disabled={gmailBusy === "search"}
+                      className="rounded-full bg-emerald-700 px-5 py-2 text-sm font-semibold text-white disabled:opacity-50"
+                    >
+                      {gmailBusy === "search" ? t.gmailSearching : t.gmailSearch}
+                    </button>
+                  </div>
+                  {gmailMessages.length > 0 && (
+                    <div className="mt-3">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                        {t.gmailMessages} ({gmailMessages.length})
+                      </p>
+                      <div className="mt-2 divide-y divide-slate-200">
+                        {gmailMessages.map((message) => (
+                          <button
+                            key={message.id}
+                            type="button"
+                            data-testid={`gmail-message-${message.id}`}
+                            onClick={() => handleGmailPreview(message.id)}
+                            disabled={gmailBusy === `preview-${message.id}`}
+                            className="flex w-full flex-col gap-1 py-2 text-left text-sm hover:bg-white disabled:opacity-50"
+                          >
+                            <span className="font-medium">{message.subject || "(sin asunto)"}</span>
+                            <span className="text-xs text-slate-500">
+                              {message.sender} · {message.date}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <h3 className="mt-5 text-sm font-semibold uppercase tracking-wide text-slate-500">
+              {t.emailOr}
+            </h3>
+            <div className="mt-3 flex flex-wrap items-center gap-3">
               <label className="text-sm font-medium text-slate-700">
                 {t.emailFile}
                 <input

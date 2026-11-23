@@ -8,6 +8,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import httpx
 import pytest
 
+from practicv.adapters.sources.email_alerts import parse_email
+
 JOB_HTML = """
 <!doctype html>
 <html>
@@ -139,3 +141,30 @@ def test_email_preview_rejects_empty_file(client: httpx.Client) -> None:
     )
     assert response.status_code == 422
     assert "empty" in response.text.lower()
+
+
+def test_email_preview_filters_linkedin_noise() -> None:
+    message = EmailMessage()
+    message["Subject"] = "LinkedIn jobs"
+    message.set_content("Ofertas")
+    message.add_alternative(
+        """
+        <html><body>
+          <a href="https://www.linkedin.com/comm/feed?eid=1">Feed</a>
+          <a href="https://www.linkedin.com/comm/jobs/view/4346741532?trk=logo">
+            Oferta en LinkedIn
+          </a>
+          <a href="https://www.linkedin.com/comm/jobs/view/4346741532?trk=body">
+            Practicante de Datos
+          </a>
+          <a href="https://itunes.apple.com/us/app/linkedin/id288429040">App</a>
+        </body></html>
+        """,
+        subtype="html",
+    )
+
+    preview = parse_email(message.as_bytes())
+
+    assert len(preview.candidates) == 1
+    assert preview.candidates[0].url == "https://www.linkedin.com/jobs/view/4346741532"
+    assert preview.candidates[0].title == "Practicante de Datos"
