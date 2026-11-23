@@ -391,18 +391,19 @@ El proyecto está terminado cuando:
 
 ---
 
-## Fase 8 — v0.2 (features completas; OAuth pendiente)
+## Fase 8 — v0.2 (features completas; Gmail OAuth en vivo; Outlook pendiente)
 
 - [x] Flujo manual de Power Automate para enviar el ICS/CSV exportado (UNMSM, sin Premium). Evidencia en `docs/power-automate.md`.
 - [x] Bookmarklet para capturar la oferta visible desde el navegador. Ver `docs/bookmarklet.md`.
 - [x] Importación de alertas de correo desde `.eml` (Gmail/Outlook), con preview y deduplicación. Ver `docs/email-alerts.md`.
-- [ ] OAuth Gmail/Outlook en vivo: requiere registrar una app y credenciales; no validado en v0.2.
+- [x] Gmail OAuth en vivo con `gmail.readonly` y Google Personal mode; token en el llavero. Ver `docs/email-alerts.md`.
+- [ ] Outlook/Microsoft Graph: extensión futura; requiere registrar una app Entra.
 - [x] Adaptador Practilizate (CSV opcional, desactivado por defecto). Ver `docs/practilizate.md`.
 - [x] Dashboard Power BI de embudo (PBIP validado 0/0 y captura). Ver `docs/powerbi.md`.
 - [ ] Múltiples versiones de CV (v0.3).
 - [ ] Traducción de docs internas al inglés (v0.3).
 - [ ] Deploy público de la demo (v0.3).
 
-**E2E de v0.2:** backend **25/25**, Playwright **9/9**, Power BI **0 errores / 0 warnings**. El flujo PA se ejecutó con `calendar.ics` el 2026-11-23 12:19 (985 ms, `Succeeded`). Capturas: `docs/assets/power-automate-run.png` y `docs/assets/practicv-dashboard.png`.
+**E2E de v0.2:** backend **29/29**, Playwright **10/10**, Power BI **0 errores / 0 warnings**. El flujo PA se ejecutó con `calendar.ics` el 2026-11-23 12:19 (985 ms, `Succeeded`). Gmail OAuth quedó conectado y extrajo 6 ofertas de un digest real. Capturas: `docs/assets/power-automate-run.png` y `docs/assets/practicv-dashboard.png`.
 
 **Plan:** [`docs/v0.2-plan.md`](docs/v0.2-plan.md).

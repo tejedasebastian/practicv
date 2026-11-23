@@ -4,7 +4,7 @@
 
 PractiCV convierte cualquier oferta de prácticas en una decisión: captura la oferta, la compara con tu CV, te explica qué te falta y organiza tu postulación en un Kanban con recordatorios.
 
-> **Estado:** **v0.2.0 — features completas**. Perfil/CV, ofertas multi-fuente, bookmarklet, importación de alertas `.eml`, Practilizate opcional, matching explicable, Kanban, recordatorios, exportaciones y dashboard Power BI. La sincronización OAuth de Gmail/Outlook queda pendiente de credenciales de una app registrada. El dogfooding con ofertas reales sigue como paso manual opcional.
+> **Estado:** **v0.2.1 - Gmail OAuth en vivo**. Perfil/CV, ofertas multi-fuente, bookmarklet, Gmail conectado, importación `.eml`, Practilizate opcional, matching explicable, Kanban, recordatorios, exportaciones y dashboard Power BI. Outlook/Microsoft Graph queda como extensión futura. El dogfooding con ofertas reales sigue como paso manual opcional.
 >
 > **English:** [README.en.md](README.en.md)
 
@@ -27,7 +27,7 @@ PractiCV responde:
 ## Qué hace
 
 1. **Perfil y CV:** crea tu perfil y sube tu CV en PDF o DOCX.
-2. **Captura:** agrega ofertas desde texto, CSV, URL, el MCP de practicas.pe, el bookmarklet o un correo `.eml`.
+2. **Captura:** agrega ofertas desde texto, CSV, URL, el MCP de practicas.pe, el bookmarklet, Gmail conectado o un correo `.eml`.
 3. **Extracción:** detecta requisitos, habilidades y niveles.
 4. **Match explicable:** calcula coincidencia y muestra brechas con evidencia.
 5. **Kanban:** guarda, postula, agenda entrevista, registra rechazo u oferta.
@@ -76,6 +76,7 @@ No es un job board, no postula automáticamente y no promete empleo.
 - **CSV/Excel:** plantilla descargable, previsualización y errores por fila.
 - **URL:** JSON-LD `JobPosting` y OpenGraph; solo se guarda texto extraído, nunca HTML crudo.
 - **Bookmarklet:** captura la página visible, previsualiza y confirma antes de guardar.
+- **Gmail OAuth:** conecta tu cuenta con `gmail.readonly`, busca alertas y previsualiza enlaces; token en el llavero.
 - **Correo `.eml`:** importa enlaces de una alerta de Gmail/Outlook; el usuario elige cuáles.
 - **Practilizate:** adaptador opcional para importar su CSV; desactivado por defecto.
 - **MCP `practicas-pe`:** búsqueda, detalle e importación; si no está disponible, la UI ofrece texto/CSV/URL.
@@ -347,8 +348,9 @@ artifacts/e2e/
 |---|---|
 | Ofertas en seed sintético | 1,005 |
 | Matches en seed sintético | 505 |
-| Tests E2E backend | 25 passed |
-| Tests E2E UI (Playwright) | 9 passed |
+| Tests E2E backend | 29 passed |
+| Tests E2E UI (Playwright) | 10 passed |
+| Gmail OAuth | Conectado; 3 correos listados y 6 ofertas canónicas en un digest |
 | Dashboard Power BI | PBIP 0 errores / 0 warnings |
 | Tiempo E2E backend | ~10 s |
 | Checksums de artefactos | 5/5 OK |
@@ -363,7 +365,8 @@ artifacts/e2e/
 - El parseo de CV puede fallar en formatos complejos; el usuario corrige.
 - La captura por URL es best effort; algunos portales bloquean.
 - El bookmarklet necesita la app local abierta en el mismo origen.
-- La importación de correo usa `.eml`; OAuth Gmail/Outlook requiere credenciales de app.
+- Gmail OAuth funciona con Google Personal mode; Outlook/Microsoft Graph no está implementado.
+- El token de Gmail vive en el llavero del sistema, no en el repo.
 - El adaptador Practilizate está desactivado por defecto y se alimenta por CSV.
 - El dashboard Power BI usa datos sintéticos y refresh manual.
 - El MCP puede no estar disponible; hay fallback manual.
@@ -377,7 +380,7 @@ artifacts/e2e/
 ## Roadmap
 
 - **v0.1 (MVP completo):** perfil, CV, captura multi-fuente, match, Kanban, recordatorios y export.
-- **v0.2 (features completas):** bookmarklet, alertas `.eml`, Practilizate opcional, Power Automate manual y dashboard Power BI. OAuth Gmail/Outlook queda pendiente de credenciales.
+- **v0.2 (features completas):** bookmarklet, Gmail OAuth en vivo, alertas `.eml`, Practilizate opcional, Power Automate manual y dashboard Power BI. Outlook/Microsoft Graph queda como extensión futura.
 - **v0.3:** múltiples versiones de CV y deploy público de la demo.
 
 Ver [`docs/v0.2-plan.md`](docs/v0.2-plan.md) y [ROADMAP.md](ROADMAP.md).

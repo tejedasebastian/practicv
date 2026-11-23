@@ -4,7 +4,7 @@
 
 PractiCV turns any internship posting into a decision: it captures the offer, compares it with your CV, explains your gaps, and organizes your application in a Kanban board with reminders.
 
-> **Status:** **v0.2.0 — feature complete**. Profile/CV, multi-source offers, bookmarklet, `.eml` alert import, optional Practilizate, explainable matching, Kanban, reminders, exports, and a Power BI dashboard. Live Gmail/Outlook OAuth is pending app credentials. Real-offer dogfooding remains an optional manual step.
+> **Status:** **v0.2.1 — live Gmail OAuth**. Profile/CV, multi-source offers, bookmarklet, connected Gmail, `.eml` import, optional Practilizate, explainable matching, Kanban, reminders, exports, and a Power BI dashboard. Outlook/Microsoft Graph remains a future extension. Real-offer dogfooding remains an optional manual step.
 >
 > **Español:** [README.md](README.md)
 
@@ -27,7 +27,7 @@ PractiCV answers:
 ## What it does
 
 1. **Profile and CV:** create a profile and upload a PDF or DOCX CV.
-2. **Capture:** add offers from text, CSV, URL, the practicas.pe MCP, the bookmarklet, or an `.eml` email.
+2. **Capture:** add offers from text, CSV, URL, the practicas.pe MCP, the bookmarklet, connected Gmail, or an `.eml` email.
 3. **Extraction:** detect requirements, skills, and levels.
 4. **Explainable match:** calculate fit and show gaps with evidence.
 5. **Kanban:** saved, applied, interview, rejected, offer.
@@ -76,6 +76,7 @@ It is not a job board, it does not auto-apply, and it does not promise employmen
 - **CSV/Excel:** downloadable template, preview, and row-level errors.
 - **URL:** `JobPosting` JSON-LD and OpenGraph; only extracted text is stored, never raw HTML.
 - **Bookmarklet:** captures the visible page, previews it, and confirms before saving.
+- **Gmail OAuth:** connects your account with `gmail.readonly`, searches alerts, and previews links; token in the system keyring.
 - **Email `.eml`:** imports links from a Gmail/Outlook alert; the user selects them.
 - **Practilizate:** optional CSV adapter, disabled by default.
 - **MCP `practicas-pe`:** search, detail, and import; if unavailable, the UI falls back to text/CSV/URL.
@@ -347,8 +348,9 @@ artifacts/e2e/
 |---|---|
 | Offers in synthetic seed | 1,005 |
 | Matches in synthetic seed | 505 |
-| Backend E2E tests | 25 passed |
-| UI E2E tests (Playwright) | 9 passed |
+| Backend E2E tests | 29 passed |
+| UI E2E tests (Playwright) | 10 passed |
+| Gmail OAuth | Connected; 3 emails listed and 6 canonical offers from a digest |
 | Power BI dashboard | PBIP 0 errors / 0 warnings |
 | Backend E2E runtime | ~10 s |
 | Artifact checksums | 5/5 OK |
@@ -363,7 +365,8 @@ artifacts/e2e/
 - CV parsing may fail on complex formats; the user corrects it.
 - URL capture is best effort; some portals block it.
 - The bookmarklet needs the local app open on the same origin.
-- Email import uses `.eml`; live Gmail/Outlook OAuth requires app credentials.
+- Gmail OAuth uses Google Personal mode; Outlook/Microsoft Graph is not implemented.
+- The Gmail token lives in the system keyring, never in the repo.
 - The Practilizate adapter is disabled by default and reads a CSV.
 - The Power BI dashboard uses synthetic data and manual refresh.
 - The MCP may be unavailable; manual fallback exists.
@@ -377,7 +380,7 @@ artifacts/e2e/
 ## Roadmap
 
 - **v0.1 (MVP complete):** profile, CV, multi-source capture, match, Kanban, reminders, and export.
-- **v0.2 (feature complete):** bookmarklet, `.eml` alerts, optional Practilizate, manual Power Automate, and Power BI dashboard. Live Gmail/Outlook OAuth is pending credentials.
+- **v0.2 (feature complete):** bookmarklet, live Gmail OAuth, `.eml` alerts, optional Practilizate, manual Power Automate, and Power BI dashboard. Outlook/Microsoft Graph remains a future extension.
 - **v0.3:** multiple CV versions and a public demo deploy.
 
 See [`docs/v0.2-plan.md`](docs/v0.2-plan.md) and [ROADMAP.md](ROADMAP.md).

@@ -1,11 +1,11 @@
 # SPECS.md — PractiCV
 
 > **Producto:** PractiCV — Copiloto de postulaciones para estudiantes.
-> **Versión:** 0.1 (MVP) + 0.2 (features completas).
+> **Versión:** 0.1 (MVP) + 0.2.1 (Gmail OAuth en vivo).
 > **Fecha:** 23 de noviembre de 2026.
-> **Estado:** releases `v0.1.0` y `v0.2.0`; la sincronización OAuth de
-> Gmail/Outlook queda pendiente de credenciales de una app registrada
-> (ver [`docs/v0.2-plan.md`](docs/v0.2-plan.md)).
+> **Estado:** releases `v0.1.0`, `v0.2.0` y `v0.2.1`; Gmail OAuth validado en
+> vivo con Google Personal mode. Outlook/Microsoft Graph queda como extensión
+> futura (ver [`docs/email-alerts.md`](docs/email-alerts.md)).
 > **Documentación:** español. **Código y commits:** inglés. **UI:** español e inglés.
 
 ---
