@@ -54,6 +54,8 @@ El flujo no usa OneDrive, SharePoint, HTTP trigger ni conectores Premium.
 - Captura: `docs/assets/power-automate-run.png`.
 - Intentos previos (12:12 y 12:15) fallaron con `Unauthorized` por la conexión;
   se recreó la conexión `PractiCV Outlook` y la tercera ejecución pasó.
+- El correo llegó al buzón del destinatario a las 12:19. Outlook lo clasificó
+  como **correo no deseado** y bloqueó el `.ics` (ver sección 7).
 
 La captura muestra el historial de ejecuciones, no el buzón. La recepción del
 correo se confirma en el cliente de correo del destinatario.
@@ -63,13 +65,35 @@ correo se confirma en el cliente de correo del destinatario.
 - **Manual:** hay que ejecutar el flujo y adjuntar el archivo cada vez.
 - **Sin deduplicación:** el ICS/CSV ya viene del export de PractiCV.
 - **Sin programación:** no hay scheduler ni lectura de una carpeta.
+- **Un archivo por ejecución:** el flujo adjunta el archivo del trigger; no
+  adjunta ICS y CSV a la vez.
 - **Reautenticación:** si el tenant invalida la conexión, el flujo falla con
   `Unauthorized`; hay que volver a conectar `PractiCV Outlook`.
+- **Filtro del buzón:** Outlook puede mandar el correo a no deseado y bloquear
+  el adjunto `.ics`.
 - **Sin secretos en el repo:** la conexión y el destinatario viven en Power
   Automate, no en Git.
 - **PII:** la documentación y la captura no incluyen direcciones de correo.
 
-## 7. Reproducirlo
+## 7. Problema conocido: Outlook bloquea el `.ics`
+
+En la prueba real el correo cayó en **Correo no deseado** y Outlook mostró
+"Los datos adjuntos de este mensaje se han bloqueado por su seguridad". No es un
+fallo del flujo: es una política del cliente de correo.
+
+Workarounds:
+
+1. Marcar el mensaje como **No es correo no deseado** y agregar el remitente a
+   remitentes seguros.
+2. Si el `.ics` sigue bloqueado, comprimirlo en `.zip` antes de ejecutar el
+   flujo.
+3. Para el Kanban, enviar el CSV; suele ser menos propenso al bloqueo.
+4. También se puede abrir el `.ics` desde el export local sin pasar por correo.
+
+El cuerpo del correo aclara que se adjunta **el calendario `.ics` o el CSV**,
+porque el flujo acepta un archivo por ejecución.
+
+## 8. Reproducirlo
 
 1. Crear un flujo instantáneo en la cuenta UNMSM.
 2. Añadir `Manually trigger a flow` y un input de tipo **File**.
