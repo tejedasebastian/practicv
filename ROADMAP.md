@@ -391,13 +391,17 @@ El proyecto está terminado cuando:
 
 ---
 
-## Backlog v0.2 (no ahora)
+## Fase 8 — v0.2 (en curso)
 
-- Bookmarklet.
-- Correos de alerta (Gmail/Outlook).
-- Adaptador Practilizate.
-- Flujo Power Automate.
-- Dashboard Power BI de embudo.
-- Múltiples versiones de CV.
-- Traducción de docs internas al inglés.
-- Deploy público de la demo.
+- [x] Flujo manual de Power Automate para enviar el ICS/CSV exportado (UNMSM, sin Premium). Evidencia en `docs/power-automate.md`.
+- [ ] Bookmarklet para capturar la oferta visible.
+- [ ] Correos de alerta (Gmail/Outlook, OAuth de solo lectura).
+- [ ] Adaptador Practilizate (CSV o vista PostgreSQL, opcional).
+- [ ] Dashboard Power BI de embudo de postulaciones.
+- [ ] Múltiples versiones de CV (v0.3).
+- [ ] Traducción de docs internas al inglés (v0.3).
+- [ ] Deploy público de la demo (v0.3).
+
+**E2E del checkpoint PA:** flujo `PractiCV Recordatorios` guardado y ejecutado con `calendar.ics` el 2026-11-23 12:19 (985 ms, `Succeeded`). Captura: `docs/assets/power-automate-run.png`. Límite: ejecución manual, no programada.
+
+**Plan:** [`docs/v0.2-plan.md`](docs/v0.2-plan.md).

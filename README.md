@@ -215,7 +215,9 @@ Mueve la oferta a Guardada, Postulada, Entrevista, Rechazada u Oferta. Agrega no
 
 ### 6. Recordatorios y exportación
 
-Exporta `.ics` para tu calendario y Excel/CSV para tu registro.
+Exporta `.ics` para tu calendario y Excel/CSV para tu registro. El envío por
+correo se hace con el flujo manual `PractiCV Recordatorios`; ver
+[`docs/power-automate.md`](docs/power-automate.md).
 
 ---
 
@@ -364,10 +366,10 @@ artifacts/e2e/
 ## Roadmap
 
 - **v0.1 (MVP completo):** perfil, CV, captura multi-fuente, match, Kanban, recordatorios y export.
-- v0.2: bookmarklet, correos de alerta, adaptador Practilizate, Power Automate, Power BI.
-- v0.3: múltiples versiones de CV y deploy público de la demo.
+- **v0.2 (en curso):** flujo manual de Power Automate documentado; bookmarklet, correos de alerta, adaptador Practilizate y Power BI pendientes.
+- **v0.3:** múltiples versiones de CV y deploy público de la demo.
 
-Ver [ROADMAP.md](ROADMAP.md).
+Ver [`docs/v0.2-plan.md`](docs/v0.2-plan.md) y [ROADMAP.md](ROADMAP.md).
 
 ---
 

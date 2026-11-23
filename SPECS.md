@@ -3,7 +3,8 @@
 > **Producto:** PractiCV — Copiloto de postulaciones para estudiantes.
 > **Versión:** 0.1 (MVP).
 > **Fecha:** 17 de noviembre de 2026.
-> **Estado:** especificación cerrada; implementación pendiente.
+> **Estado:** especificación de v0.1 cerrada y release `v0.1.0`; v0.2 en curso
+> (ver [`docs/v0.2-plan.md`](docs/v0.2-plan.md)).
 > **Documentación:** español. **Código y commits:** inglés. **UI:** español e inglés.
 
 ---
@@ -131,7 +132,7 @@ Las bolsas de trabajo resuelven la publicación, no la decisión personal. Pract
 | Taxonomía de habilidades | Propia | `skills.yaml` + alias | Sí | Ninguna |
 | Benchmarks | Practilizate/público | CSV agregado | Opcional | Opcional |
 | Recordatorios | App | Scheduler + ICS | Sí | Ninguna |
-| Correo/WhatsApp | Power Automate | Flujo externo | v0.2 | Ninguna |
+| Correo/WhatsApp | Power Automate | Flujo manual estándar | v0.2 | Ninguna |
 
 ### 6.2 MCP `practicas-pe`
 

@@ -215,7 +215,9 @@ Move the offer to Saved, Applied, Interview, Rejected, or Offer. Add notes and t
 
 ### 6. Reminders and export
 
-Export `.ics` to your calendar and Excel/CSV for your records.
+Export `.ics` to your calendar and Excel/CSV for your records. Email delivery
+uses the manual `PractiCV Recordatorios` flow; see
+[`docs/power-automate.md`](docs/power-automate.md).
 
 ---
 
@@ -364,10 +366,10 @@ artifacts/e2e/
 ## Roadmap
 
 - **v0.1 (MVP complete):** profile, CV, multi-source capture, match, Kanban, reminders, and export.
-- v0.2: bookmarklet, email alerts, Practilizate adapter, Power Automate, Power BI.
-- v0.3: multiple CV versions and a public demo deploy.
+- **v0.2 (in progress):** documented manual Power Automate flow; bookmarklet, email alerts, Practilizate adapter, and Power BI pending.
+- **v0.3:** multiple CV versions and a public demo deploy.
 
-See [ROADMAP.md](ROADMAP.md).
+See [`docs/v0.2-plan.md`](docs/v0.2-plan.md) and [ROADMAP.md](ROADMAP.md).
 
 ---
 
