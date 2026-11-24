@@ -41,6 +41,8 @@ It is not a job board, it does not auto-apply, and it does not promise employmen
 
 ## Demo
 
+Local demo with synthetic data. **There is no public instance**: the video and screenshots were recorded on a local machine during v0.1/v0.2.
+
 [Watch a short demo video](docs/assets/demo.webm)
 
 ![Landing](docs/assets/landing.png)
@@ -142,7 +144,7 @@ Sources: MCP, text, CSV, URL    Exports: Excel, CSV, ICS
 ## Quick start
 
 ```powershell
-git clone <repository-url>
+git clone https://github.com/tejedasebastian/practicv.git
 cd practicv
 
 # Local PostgreSQL

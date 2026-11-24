@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     mcp_enabled: bool = True
     mcp_server_path: str | None = None
     mcp_fixture_dir: str | None = None
-    url_capture_user_agent: str = "PractiCV/0.1.0 (+https://github.com/kuki236/practicv)"
+    url_capture_user_agent: str = "PractiCV/0.2.1 (+https://github.com/tejedasebastian/practicv)"
     practilizate_enabled: bool = False
     google_client_id: str | None = None
     google_client_secret: str | None = None
