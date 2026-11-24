@@ -8,12 +8,16 @@
     "applications": "Applications"
   },
   "hero": {
-    "eyebrow": "Phase 0 · Foundation",
+    "eyebrow": "v0.2.1 · Application copilot",
     "title": "PractiCV",
     "subtitle": "Turn any internship posting into a decision.",
     "description": "Capture offers, compare them with your CV, understand your gaps, and organize your application in one place.",
     "primaryCta": "View the roadmap",
-    "secondaryCta": "Read the spec"
+    "secondaryCta": "View current status"
+  },
+  "spec": {
+    "title": "PractiCV v0.2.1",
+    "body": "Profile and CV, multi-source offers, explainable matching, Kanban, reminders, and exports. Power BI dashboard with synthetic data. Local demo, no public instance."
   },
   "features": [
     {

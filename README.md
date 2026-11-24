@@ -41,7 +41,7 @@ No es un job board, no postula automáticamente y no promete empleo.
 
 ## Demo
 
-Demo local con datos sintéticos. **No hay una instancia pública**: el video y las capturas se grabaron en una máquina local durante v0.1/v0.2.
+Demo local con datos sintéticos. **No hay una instancia pública**: el video y las capturas se grabaron en una máquina local con v0.2.1.
 
 [Ver demo corta en video](docs/assets/demo.webm)
 

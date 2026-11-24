@@ -13,7 +13,7 @@ la base, no recalcula matches y no decide a quién alertar.
 
 - Microsoft retiró Power Automate para cuentas personales (`outlook.com`) el
   27 de julio de 2025. La cuenta personal ya no puede entrar al portal.
-- El tenant UNMSM no tiene un OneDrive usable: el navegador cae en
+- El tenant institucional no tiene un OneDrive usable: el navegador cae en
   `PolicyViolationThrottle.htm`. Sin almacenamiento en la nube no hay flujo
   programado que lea el archivo.
 - El trigger HTTP es Premium. No se usa.
@@ -28,7 +28,7 @@ exporta, ejecuta el flujo y adjunta el archivo.
 | Parte | Configuración |
 |---|---|
 | Nombre | `PractiCV Recordatorios` |
-| Entorno | UNMSM (cuenta work/school) |
+| Entorno | institución (cuenta work/school) |
 | Trigger | `Manually trigger a flow`, input **File** llamado `Export PractiCV` |
 | Acción | `Send an email (V2)` — Office 365 Outlook |
 | Conexión | `PractiCV Outlook` |
@@ -95,7 +95,7 @@ porque el flujo acepta un archivo por ejecución.
 
 ## 8. Reproducirlo
 
-1. Crear un flujo instantáneo en la cuenta UNMSM.
+1. Crear un flujo instantáneo en la cuenta institucional.
 2. Añadir `Manually trigger a flow` y un input de tipo **File**.
 3. Añadir `Send an email (V2)` con la conexión de Outlook.
 4. Configurar asunto, cuerpo y destinatario.

@@ -393,7 +393,7 @@ El proyecto está terminado cuando:
 
 ## Fase 8 — v0.2 (features completas; Gmail OAuth en vivo; Outlook pendiente)
 
-- [x] Flujo manual de Power Automate para enviar el ICS/CSV exportado (UNMSM, sin Premium). Evidencia en `docs/power-automate.md`.
+- [x] Flujo manual de Power Automate para enviar el ICS/CSV exportado (cuenta institucional, sin Premium). Evidencia en `docs/power-automate.md`.
 - [x] Bookmarklet para capturar la oferta visible desde el navegador. Ver `docs/bookmarklet.md`.
 - [x] Importación de alertas de correo desde `.eml` (Gmail/Outlook), con preview y deduplicación. Ver `docs/email-alerts.md`.
 - [x] Gmail OAuth en vivo con `gmail.readonly` y Google Personal mode; token en el llavero. Ver `docs/email-alerts.md`.

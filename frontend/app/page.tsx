@@ -69,7 +69,7 @@ export default function Home() {
       <section className="mx-auto max-w-6xl px-6 pb-20 pt-12">
         <p
           className="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-emerald-700"
-          data-testid="phase-label"
+          data-testid="version-label"
         >
           {t.hero.eyebrow}
         </p>
@@ -92,7 +92,7 @@ export default function Home() {
             {t.hero.primaryCta}
           </a>
           <a
-            href="#spec"
+            href="#status"
             className="rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
           >
             {t.hero.secondaryCta}
@@ -116,20 +116,17 @@ export default function Home() {
         ))}
       </section>
 
-      <section id="spec" className="mx-auto max-w-6xl px-6 pb-20">
+      <section id="status" className="mx-auto max-w-6xl px-6 pb-20">
         <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-sm text-emerald-900">
-          <p className="font-semibold">PractiCV v0.1.0 · Fase 0</p>
-          <p className="mt-2">
-            Scaffold listo: FastAPI, Next.js, PostgreSQL, Docker, CI y E2E. El producto se construye en
-            los siguientes checkpoints del roadmap.
-          </p>
+          <p className="font-semibold">{t.spec.title}</p>
+          <p className="mt-2">{t.spec.body}</p>
         </div>
       </section>
 
       <footer className="border-t border-slate-200 bg-white/60">
         <div className="mx-auto flex max-w-6xl flex-col gap-2 px-6 py-8 text-sm text-slate-500 md:flex-row md:items-center md:justify-between">
           <span>{t.footer}</span>
-          <span>PractiCV · v0.1.0</span>
+          <span>PractiCV · v0.2.1</span>
         </div>
       </footer>
     </main>

@@ -53,11 +53,11 @@ sin auto-postulación y sin promesas de empleo.
 
 ### Recordatorios con Power Automate
 
-- Flujo manual `PractiCV Recordatorios` en UNMSM.
+- Flujo manual `PractiCV Recordatorios` en una cuenta institucional.
 - Archivo de entrada + `Send an email (V2)` con adjunto.
 - Ejecución real: 985 ms, `Succeeded`.
-- No es programado: Microsoft retiró PA para cuentas personales y OneDrive
-  UNMSM está bloqueado por el tenant.
+- No es programado: Microsoft retiró PA para cuentas personales y el OneDrive
+  institucional está bloqueado por política del tenant.
 
 ---
 

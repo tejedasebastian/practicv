@@ -69,7 +69,7 @@ const profile = {
   full_name: "Estudiante Demo",
   email: "demo@practicv.local",
   phone: null,
-  university: "UNMSM",
+  university: "Universidad Demo",
   career: "Ingeniería de Software",
   cycle: 8,
   location: "Lima",
@@ -83,6 +83,8 @@ const profile = {
 };
 
 test("demo walkthrough", async ({ page }) => {
+  test.setTimeout(60_000);
+
   await page.addInitScript((id) => {
     window.localStorage.setItem("practicv.profileId", id);
     window.localStorage.setItem("practicv.locale", "es");
@@ -130,22 +132,30 @@ test("demo walkthrough", async ({ page }) => {
 
   await page.goto("/");
   await expect(page.getByTestId("app-title")).toHaveText("PractiCV");
-  await page.waitForTimeout(2000);
+  await page.waitForTimeout(2500);
+  await page.mouse.wheel(0, 350);
+  await page.waitForTimeout(1500);
 
   await page.goto("/perfil");
   await expect(page.getByRole("heading", { name: "Tu perfil" })).toBeVisible();
+  await page.waitForTimeout(2500);
+  await page.mouse.wheel(0, 500);
   await page.waitForTimeout(2000);
 
   await page.goto("/ofertas");
   await expect(page.getByTestId("offers-title")).toBeVisible();
-  await page.waitForTimeout(2500);
+  await page.waitForTimeout(3000);
+  await page.mouse.wheel(0, 450);
+  await page.waitForTimeout(2000);
 
   await page.goto(`/ofertas/${offerId}`);
   await page.getByTestId("match-calculate").click();
   await expect(page.getByTestId("match-score")).toContainText("85");
-  await page.waitForTimeout(2500);
+  await page.waitForTimeout(3000);
+  await page.mouse.wheel(0, 380);
+  await page.waitForTimeout(2000);
 
   await page.goto("/postulaciones");
   await expect(page.getByTestId("applications-title")).toBeVisible();
-  await page.waitForTimeout(3000);
+  await page.waitForTimeout(5000);
 });

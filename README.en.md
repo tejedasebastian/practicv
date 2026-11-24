@@ -41,7 +41,7 @@ It is not a job board, it does not auto-apply, and it does not promise employmen
 
 ## Demo
 
-Local demo with synthetic data. **There is no public instance**: the video and screenshots were recorded on a local machine during v0.1/v0.2.
+Local demo with synthetic data. **There is no public instance**: the video and screenshots were recorded on a local machine with v0.2.1.
 
 [Watch a short demo video](docs/assets/demo.webm)
 

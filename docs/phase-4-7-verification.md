@@ -176,10 +176,10 @@ npx playwright test tests/e2e/demo.spec.ts
 Resultado:
 
 ```text
-1 passed (29.4s)
+1 passed (32.6s)
 ```
 
-Video: `docs/assets/demo.webm` (~22 s).
+Video: `docs/assets/demo.webm` (~30 s).
 
 ---
 

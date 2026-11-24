@@ -99,7 +99,7 @@ def seed_demo(session: Session, volume: int = 1000) -> SeedResult:
         Profile(
             full_name="Estudiante Demo",
             email=DEMO_EMAIL,
-            university="UNMSM",
+            university="Universidad Demo",
             career="Ingeniería de Software",
             cycle=8,
             location="Lima",
@@ -122,7 +122,7 @@ def seed_demo(session: Session, volume: int = 1000) -> SeedResult:
             ),
             parsed_json={
                 "skills": ["Python", "SQL", "Power BI", "Excel", "FastAPI"],
-                "education": "UNMSM",
+                "education": "Universidad Demo",
             },
         )
     )
